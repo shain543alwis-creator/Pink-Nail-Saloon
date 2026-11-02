@@ -3,518 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pink Nail Salon - Staff & Payroll Management System</title>
-    <!-- Tailwind CSS -->
+    <title>Pink Nail Salon - Management System</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
-
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#fff1f2',
-                            100: '#ffe4e6',
-                            200: '#fecdd3',
-                            300: '#fda4af',
-                            400: '#fb7185',
-                            500: '#f43f5e',
-                            600: '#e11d48',
-                            700: '#be123c',
-                            800: '#9f1239',
-                            900: '#881337',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                        serif: ['Playfair Display', 'serif']
+                        brandPink: '#e91e63',
+                        brandPinkDark: '#c2185b',
+                        brandPinkLight: '#fce4ec',
+                        brandMagenta: '#880e4f',
+                        salonPurple: '#4a148c'
                     }
                 }
             }
         }
     </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, #be123c 0%, #ec4899 50%, #f472b6 100%);
+            background: linear-gradient(135deg, #e91e63 0%, #880e4f 100%);
         }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #ffe4e6;
-            border-radius: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #fb7185;
-            border-radius: 8px;
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(233, 30, 99, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
-<body class="bg-rose-50/40 font-sans text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-slate-50 font-sans min-h-screen flex flex-col text-slate-800">
 
-    <!-- TOP BRAND HEADER -->
-    <header class="gradient-bg text-white shadow-lg relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div class="flex items-center gap-4 text-center md:text-left">
-                <!-- Salon Logo Graphic -->
-                <div class="w-14 h-14 bg-white rounded-full p-2 flex items-center justify-center shadow-md border-2 border-rose-200 shrink-0">
-                    <svg viewBox="0 0 100 100" class="w-full h-full text-brand-700 fill-current">
-                        <path d="M50 10 C30 10 15 25 15 45 C15 65 30 85 50 85 C55 85 60 83 64 80 C60 76 56 70 54 62 C48 65 42 63 38 58 C34 52 35 44 40 38 C43 34 49 32 54 34 C58 35 61 38 62 42 C65 40 70 41 74 44 C79 49 80 57 77 63 C83 57 85 48 85 45 C85 25 70 10 50 10 Z" fill="none" stroke="currentColor" stroke-width="4"/>
-                        <circle cx="50" cy="30" r="4" class="fill-pink-500"/>
-                        <path d="M35 55 Q 45 40, 60 48 T 70 65" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M28 40 C 35 25, 65 25, 72 40" fill="none" stroke="#f43f5e" stroke-width="3"/>
-                    </svg>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center gradient-bg p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 border border-pink-100">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-pink-100 text-brandPink mb-4 border-4 border-pink-200">
+                    <i class="fa-solid fa-hand-sparkles text-4xl"></i>
                 </div>
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-extrabold font-serif tracking-tight text-white drop-shadow-sm">
-                        PINK <span class="font-sans font-light text-rose-200 text-xl sm:text-2xl block sm:inline">Nail Salon</span>
-                    </h1>
-                    <p class="text-xs text-rose-100 font-medium tracking-wide uppercase mt-0.5">GitHub Pages Ready • Staff & Payroll System</p>
-                </div>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">PINK <span class="text-brandPink">NAIL SALON</span></h1>
+                <p class="text-slate-500 text-sm mt-1">Staff, Task & Commission Portal</p>
             </div>
 
-            <!-- Auth Status Bar -->
-            <div id="authStatusContainer" class="hidden flex items-center gap-3 bg-white/15 backdrop-blur-md px-4 py-2 rounded-full border border-white/20">
-                <div class="text-right">
-                    <div id="loggedInUserDisplay" class="text-sm font-bold text-white">Guest</div>
-                    <div id="loggedInRoleDisplay" class="text-[10px] text-rose-200 font-semibold uppercase tracking-wider">Not Authenticated</div>
+            <form id="loginForm" class="space-y-5" onsubmit="handleLogin(event)">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Username</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+                        <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink focus:border-transparent transition-all" placeholder="Enter username (admin or admin2)">
+                    </div>
                 </div>
-                <button onclick="openSecurityModal()" class="bg-white/20 hover:bg-white/30 text-white text-xs px-3 py-1.5 rounded-full transition font-semibold" title="Account Security Settings">
-                    <i class="fa-solid fa-key"></i>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+                        <input type="password" id="loginPassword" required class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink focus:border-transparent transition-all" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <div id="loginError" class="hidden text-red-500 text-xs font-semibold text-center bg-red-50 p-3 rounded-lg border border-red-200">
+                    Invalid username or password.
+                </div>
+
+                <button type="submit" class="w-full bg-brandPink hover:bg-brandPinkDark text-white font-bold py-3 rounded-lg shadow-lg shadow-pink-500/30 transition-all transform active:scale-95 flex items-center justify-center space-x-2">
+                    <span>Sign In</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
                 </button>
-                <button onclick="logout()" class="bg-rose-900/60 hover:bg-rose-900/80 text-white text-xs font-semibold px-3 py-1.5 rounded-full transition flex items-center gap-1 border border-rose-300/30">
-                    <i class="fa-solid fa-right-from-bracket"></i> Logout
-                </button>
-            </div>
-        </div>
-    </header>
 
-    <!-- MAIN APP CONTAINER -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-        <!-- LOGIN SECTION (Unauthenticated View) -->
-        <div id="loginSection" class="max-w-md mx-auto mt-4">
-            <div class="bg-white rounded-3xl shadow-xl border border-rose-100 p-8 relative overflow-hidden">
-                <div class="text-center mb-6">
-                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-rose-100 text-brand-600 mb-3 shadow-inner">
-                        <i class="fa-solid fa-user-shield text-2xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-slate-800 font-serif">Salon Portal Sign In</h2>
-                    <p class="text-xs text-slate-500 mt-1">PBKDF2 SHA-256 Encrypted Portal</p>
-                </div>
-
-                <div class="mb-5 bg-rose-50 border-l-4 border-brand-500 p-3 rounded-r-lg text-xs text-brand-900">
-                    <p class="font-bold mb-0.5"><i class="fa-solid fa-shield-halved mr-1"></i> Client-Side Security:</p>
-                    <p>Passwords are crypto-hashed with browser-native Web Crypto API before validation. Stored strictly in encrypted LocalStorage memory.</p>
-                </div>
-
-                <form onsubmit="handleLogin(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Select Account / Role</label>
-                        <select id="loginUsername" class="w-full px-4 py-3 rounded-xl border border-rose-200 focus:ring-2 focus:ring-brand-500 text-sm bg-rose-50/20">
-                            <option value="admin">Main Admin (admin)</option>
-                            <option value="admin2">Admin 2 - Assistant (admin2)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">Password</label>
-                        <div class="relative">
-                            <input type="password" id="loginPassword" required placeholder="••••••••" 
-                                class="w-full px-4 py-3 rounded-xl border border-rose-200 focus:ring-2 focus:ring-brand-500 text-sm bg-rose-50/20 pr-10">
-                            <button type="button" onclick="togglePasswordVisibility('loginPassword')" class="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600">
-                                <i class="fa-solid fa-eye text-sm"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div id="loginError" class="hidden text-xs text-red-600 bg-red-50 p-3 rounded-lg text-center font-semibold border border-red-200"></div>
-
-                    <button type="submit" class="w-full py-3.5 px-4 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-md transition transform active:scale-[0.99] flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-lock-open"></i> Login to System
-                    </button>
-                </form>
-
-                <div class="mt-6 pt-4 border-t border-slate-100 text-center">
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Default Credentials</p>
-                    <div class="grid grid-cols-2 gap-2 text-xs">
-                        <div class="bg-rose-50/80 p-2 rounded-lg border border-rose-100">
-                            <span class="block font-bold text-slate-700">Main Admin</span>
-                            <span class="text-slate-500">Pass: <code class="text-brand-600 font-mono">admin123</code></span>
-                        </div>
-                        <div class="bg-rose-50/80 p-2 rounded-lg border border-rose-100">
-                            <span class="block font-bold text-slate-700">Admin 2</span>
-                            <span class="text-slate-500">Pass: <code class="text-brand-600 font-mono">staff123</code></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- APP DASHBOARD (Authenticated View) -->
-        <div id="dashboardSection" class="hidden space-y-6">
-
-            <!-- Navigation Bar -->
-            <div class="flex flex-wrap items-center justify-between gap-3 bg-white p-2 rounded-2xl shadow-sm border border-rose-100">
-                <nav class="flex flex-wrap gap-1 sm:gap-2">
-                    <button onclick="switchTab('logTask')" id="tab-logTask" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 bg-brand-600 text-white shadow-sm">
-                        <i class="fa-solid fa-plus-circle"></i> Log Completed Task
-                    </button>
-                    <button onclick="switchTab('taskLogs')" id="tab-taskLogs" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 text-slate-600 hover:bg-rose-50">
-                        <i class="fa-solid fa-list-check"></i> Sales & Task History
-                    </button>
-                    <button onclick="switchTab('monthlyEarnings')" id="tab-monthlyEarnings" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 text-slate-600 hover:bg-rose-50">
-                        <i class="fa-solid fa-calculator"></i> Monthly Payroll
-                    </button>
-                    <button onclick="switchTab('manageStaff')" id="tab-manageStaff" class="tab-btn admin-only px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 text-slate-600 hover:bg-rose-50">
-                        <i class="fa-solid fa-users-gear"></i> Staff Members
-                    </button>
-                    <button onclick="switchTab('manageServices')" id="tab-manageServices" class="tab-btn admin-only px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 text-slate-600 hover:bg-rose-50">
-                        <i class="fa-solid fa-spa"></i> Salon Services
-                    </button>
-                </nav>
-            </div>
-
-            <!-- TAB 1: LOG TASK -->
-            <div id="view-logTask" class="tab-view space-y-6">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="lg:col-span-2 bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-rose-100">
-                        <div class="flex items-center justify-between mb-6 pb-4 border-b border-rose-100">
-                            <div>
-                                <h3 class="text-xl font-bold text-slate-800 font-serif">Record Completed Service</h3>
-                                <p class="text-xs text-slate-500">Select salesperson and completed task to calculate commission</p>
-                            </div>
-                            <span class="px-3 py-1 bg-rose-100 text-brand-700 text-xs font-bold rounded-full">
-                                <i class="fa-solid fa-bolt mr-1"></i> Quick Entry
-                            </span>
-                        </div>
-
-                        <form onsubmit="submitTaskCompletion(event)" class="space-y-5">
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Sales / Staff Person *</label>
-                                    <select id="logStaffSelect" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 text-sm bg-slate-50/50">
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Service / Task Performed *</label>
-                                    <select id="logTaskSelect" required onchange="onTaskSelectChange()" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 text-sm bg-slate-50/50">
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Sale Amount (Rs.) *</label>
-                                    <div class="relative">
-                                        <span class="absolute left-4 top-3 text-slate-400 font-medium text-sm">Rs.</span>
-                                        <input type="number" id="logSaleAmount" step="0.01" min="0" required oninput="calculatePreviewCommission()"
-                                            class="w-full pl-12 pr-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 text-sm font-semibold">
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Date & Time *</label>
-                                    <input type="datetime-local" id="logDateTime" required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 text-sm bg-slate-50/50">
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Client Name / Notes (Optional)</label>
-                                <input type="text" id="logNotes" placeholder="e.g. Client: Ananya - Gel Art French Design" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 text-sm">
-                            </div>
-
-                            <div class="bg-rose-50/70 p-4 rounded-2xl border border-rose-200/60 flex items-center justify-between">
-                                <div>
-                                    <span class="text-xs font-semibold text-rose-700 block uppercase tracking-wider">Earned Commission Preview</span>
-                                    <span id="commissionRuleBadge" class="text-xs text-slate-500">Rule: Selected rate</span>
-                                </div>
-                                <div class="text-right">
-                                    <span id="previewCommissionAmount" class="text-2xl font-black text-brand-600">Rs. 0.00</span>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="w-full py-4 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-circle-check"></i> Submit & Save Entry
-                            </button>
-                        </form>
-                    </div>
-
-                    <!-- Recent Activity -->
-                    <div class="space-y-6">
-                        <div class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
-                            <h4 class="text-base font-bold text-slate-800 font-serif mb-4 flex items-center gap-2">
-                                <i class="fa-solid fa-clock-rotate-left text-brand-500"></i> Recent Submissions
-                            </h4>
-                            <div id="recentActivityList" class="space-y-3 max-h-[380px] overflow-y-auto pr-1 custom-scrollbar">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 2: TASK & SALES LOGS -->
-            <div id="view-taskLogs" class="tab-view space-y-6 hidden">
-                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-rose-100">
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-rose-100">
-                        <div>
-                            <h3 class="text-xl font-bold text-slate-800 font-serif">Task Completion & Sales History</h3>
-                            <p class="text-xs text-slate-500">Filter completed services by staff member, keyword, or date</p>
-                        </div>
-
-                        <!-- Filters -->
-                        <div class="flex flex-wrap items-center gap-3">
-                            <input type="text" id="searchLogKeyword" oninput="renderTaskLogsTable()" placeholder="Search staff or task..." class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-medium bg-slate-50 w-36">
-                            
-                            <select id="filterStaffSelect" onchange="renderTaskLogsTable()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
-                                <option value="ALL">All Staff Members</option>
-                            </select>
-                            
-                            <input type="month" id="filterMonthSelect" onchange="renderTaskLogsTable()" class="px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold bg-slate-50">
-                            
-                            <button onclick="resetTaskLogFilters()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition">
-                                Reset
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-left border-collapse">
-                            <thead>
-                                <tr class="bg-rose-50/50 text-slate-600 text-[11px] uppercase tracking-wider font-bold border-b border-rose-100">
-                                    <th class="p-3.5 rounded-l-xl">Date & Time</th>
-                                    <th class="p-3.5">Staff Person</th>
-                                    <th class="p-3.5">Service Completed</th>
-                                    <th class="p-3.5">Sale Amount</th>
-                                    <th class="p-3.5">Commission Earned</th>
-                                    <th class="p-3.5">Notes</th>
-                                    <th class="p-3.5 text-right rounded-r-xl">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="taskLogsTableBody" class="divide-y divide-rose-50 text-sm">
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: MONTHLY EARNINGS & PAYROLL -->
-            <div id="view-monthlyEarnings" class="tab-view space-y-6 hidden">
-                <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-rose-100">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-rose-100">
-                        <div>
-                            <h3 class="text-xl font-bold text-slate-800 font-serif">Staff Monthly Earnings & Payroll</h3>
-                            <p class="text-xs text-slate-500">Calculation Formula: Base Monthly Salary + Total Commission Earned</p>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <label class="text-xs font-bold text-slate-600 uppercase">Select Month:</label>
-                            <input type="month" id="payrollMonthSelect" onchange="renderMonthlyEarnings()" class="px-4 py-2 rounded-xl border border-brand-200 text-sm font-bold bg-rose-50/50 text-brand-700">
-                        </div>
-                    </div>
-
-                    <!-- Summary KPI Cards -->
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-gradient-to-br from-rose-50 to-rose-100/60 p-5 rounded-2xl border border-rose-200/60">
-                            <span class="text-xs font-bold text-slate-500 uppercase">Total Salon Revenue</span>
-                            <div id="kpiTotalRevenue" class="text-2xl font-black text-slate-800 mt-1">Rs. 0.00</div>
-                        </div>
-                        <div class="bg-gradient-to-br from-pink-50 to-pink-100/60 p-5 rounded-2xl border border-pink-200/60">
-                            <span class="text-xs font-bold text-slate-500 uppercase">Total Commissions Payable</span>
-                            <div id="kpiTotalCommission" class="text-2xl font-black text-brand-600 mt-1">Rs. 0.00</div>
-                        </div>
-                        <div class="bg-gradient-to-br from-purple-50 to-purple-100/60 p-5 rounded-2xl border border-purple-200/60">
-                            <span class="text-xs font-bold text-slate-500 uppercase">Total Payroll (Base + Comm.)</span>
-                            <div id="kpiTotalPayroll" class="text-2xl font-black text-purple-700 mt-1">Rs. 0.00</div>
-                        </div>
-                    </div>
-
-                    <!-- Payroll Cards Container -->
-                    <div id="staffEarningsCardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 4: MANAGE STAFF (Main Admin Only) -->
-            <div id="view-manageStaff" class="tab-view space-y-6 hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
-                        <h3 class="text-lg font-bold text-slate-800 font-serif mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-user-plus text-brand-600"></i> Add Sales Staff Person
-                        </h3>
-                        <form onsubmit="handleCreateStaff(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Full Name *</label>
-                                <input type="text" id="staffNameInput" required placeholder="e.g. Jessica Silva" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Base Monthly Salary (Rs.) *</label>
-                                <div class="relative">
-                                    <span class="absolute left-3.5 top-2.5 text-slate-400 text-sm">Rs.</span>
-                                    <input type="number" id="staffBaseSalaryInput" step="0.01" min="0" required placeholder="45000" class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold focus:ring-2 focus:ring-brand-500">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Contact Phone</label>
-                                <input type="text" id="staffPhoneInput" placeholder="+94 77 123 4567" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
-                            </div>
-                            <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md">
-                                <i class="fa-solid fa-plus"></i> Save Staff Member
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
-                        <h3 class="text-lg font-bold text-slate-800 font-serif mb-4">Active Staff Directory</h3>
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-rose-50/50 text-slate-600 text-[11px] uppercase tracking-wider font-bold border-b border-rose-100">
-                                        <th class="p-3">Staff Name</th>
-                                        <th class="p-3">Base Salary (Monthly)</th>
-                                        <th class="p-3">Contact</th>
-                                        <th class="p-3 text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="staffDirectoryTableBody" class="divide-y divide-rose-50 text-sm">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 5: MANAGE SERVICES & COMMISSIONS (Main Admin Only) -->
-            <div id="view-manageServices" class="tab-view space-y-6 hidden">
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
-                        <h3 class="text-lg font-bold text-slate-800 font-serif mb-4 flex items-center gap-2">
-                            <i class="fa-solid fa-wand-magic-sparkles text-brand-600"></i> Add Salon Task/Service
-                        </h3>
-                        <form onsubmit="handleCreateService(event)" class="space-y-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Service Title *</label>
-                                <input type="text" id="serviceTitleInput" required placeholder="e.g. Acrylic Extensions" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-brand-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Standard Price (Rs.) *</label>
-                                <div class="relative">
-                                    <span class="absolute left-3.5 top-2.5 text-slate-400 text-sm">Rs.</span>
-                                    <input type="number" id="servicePriceInput" step="0.01" min="0" required placeholder="6500" class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 text-sm font-semibold">
-                                </div>
-                            </div>
-                            
-                            <div class="p-4 bg-rose-50/60 rounded-2xl border border-rose-100 space-y-3">
-                                <label class="block text-xs font-extrabold text-brand-900 uppercase">Commission Type *</label>
-                                <div class="flex items-center gap-4">
-                                    <label class="inline-flex items-center text-xs font-bold text-slate-700 cursor-pointer">
-                                        <input type="radio" name="commType" value="PERCENTAGE" checked onchange="toggleCommInputType()" class="text-brand-600 focus:ring-brand-500">
-                                        <span class="ml-1.5">Percentage (%)</span>
-                                    </label>
-                                    <label class="inline-flex items-center text-xs font-bold text-slate-700 cursor-pointer">
-                                        <input type="radio" name="commType" value="FIXED" onchange="toggleCommInputType()" class="text-brand-600 focus:ring-brand-500">
-                                        <span class="ml-1.5">Fixed Rupee (Rs.)</span>
-                                    </label>
-                                </div>
-                                <div>
-                                    <label id="commValueLabel" class="block text-xs font-semibold text-slate-600 mb-1">Commission Rate (%)</label>
-                                    <input type="number" id="serviceCommValueInput" step="0.01" min="0" required placeholder="15" class="w-full px-4 py-2 rounded-xl border border-slate-200 text-sm bg-white">
-                                </div>
-                            </div>
-
-                            <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white font-bold text-sm rounded-xl transition shadow-md">
-                                <i class="fa-solid fa-plus"></i> Save Salon Service
-                            </button>
-                        </form>
-                    </div>
-
-                    <div class="lg:col-span-2 bg-white rounded-3xl p-6 shadow-sm border border-rose-100">
-                        <h3 class="text-lg font-bold text-slate-800 font-serif mb-4">Configured Services & Commission Rates</h3>
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-rose-50/50 text-slate-600 text-[11px] uppercase tracking-wider font-bold border-b border-rose-100">
-                                        <th class="p-3">Service Name</th>
-                                        <th class="p-3">Standard Price</th>
-                                        <th class="p-3">Commission Rule</th>
-                                        <th class="p-3 text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="servicesDirectoryTableBody" class="divide-y divide-rose-50 text-sm">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </main>
-
-    <!-- USER SECURITY SETTINGS MODAL -->
-    <div id="securityModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-rose-100 relative">
-            <button onclick="closeSecurityModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <div class="text-center mb-5">
-                <div class="w-12 h-12 bg-rose-100 text-brand-600 rounded-2xl flex items-center justify-center mx-auto mb-2">
-                    <i class="fa-solid fa-shield-halved text-xl"></i>
-                </div>
-                <h3 class="text-xl font-bold font-serif text-slate-800">Account Password Security</h3>
-                <p class="text-xs text-slate-500">Update current credentials with cryptographic hashing</p>
-            </div>
-
-            <form onsubmit="handlePasswordChange(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Current Password</label>
-                    <input type="password" id="currPassInput" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">New Password</label>
-                    <input type="password" id="newPassInput" required minlength="6" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Confirm New Password</label>
-                    <input type="password" id="confirmNewPassInput" required minlength="6" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-sm">
-                </div>
-                
-                <div id="securityModalMessage" class="hidden text-xs p-2.5 rounded-lg text-center font-medium"></div>
-
-                <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeSecurityModal()" class="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl">Cancel</button>
-                    <button type="submit" class="w-1/2 py-2.5 bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold rounded-xl shadow">Update Password</button>
+                <div class="mt-6 pt-6 border-t border-slate-100 text-xs text-slate-400">
+                    <p class="font-semibold text-slate-500 mb-1">Default Demo Credentials:</p>
+                    <p>• <b>Main Admin:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin123</code> (Full Rights + Payroll)</p>
+                    <p class="mt-0.5">• <b>Admin 2:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin2</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">staff123</code> (Task Logging Only)</p>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto text-xs">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <div class="flex items-center gap-2">
-                <span class="font-bold text-white font-serif">PINK Nail Salon Management System</span> &copy; 2026.
+    <!-- MAIN APP WRAPPER -->
+    <div id="appScreen" class="hidden flex-1 flex flex-col min-h-screen">
+        <!-- TOP HEADER NAVBAR -->
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-full bg-pink-100 text-brandPink flex items-center justify-center font-bold text-lg border border-pink-200">
+                        <i class="fa-solid fa-sparkles"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">PINK <span class="text-brandPink">NAIL SALON</span></h1>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <button onclick="openSecurityModal()" class="text-slate-500 hover:text-brandPink p-2 rounded-lg hover:bg-slate-100 transition-colors" title="Security & Password Settings">
+                        <i class="fa-solid fa-key"></i>
+                    </button>
+                    <div class="h-6 w-px bg-slate-200"></div>
+                    <div class="flex items-center space-x-2">
+                        <span id="userBadge" class="bg-pink-100 text-brandPink text-xs font-bold px-2.5 py-1 rounded-full uppercase border border-pink-200">Main Admin</span>
+                        <button onclick="logout()" class="text-xs text-slate-600 hover:text-red-600 font-semibold px-2 py-1 rounded hover:bg-slate-100 transition-colors">
+                            <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="flex items-center gap-4 text-slate-500">
-                <span><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> GitHub Pages Deployment Ready</span>
+        </header>
+
+        <!-- DASHBOARD NAVIGATION TABS -->
+        <nav class="bg-white border-b border-slate-200 shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto">
+                <button onclick="switchTab('logTask')" id="tab-logTask" class="py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-brandPink text-brandPink">
+                    <i class="fa-solid fa-square-plus"></i>
+                    <span>Log Completed Task</span>
+                </button>
+                <button onclick="switchTab('history')" id="tab-history" class="py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Task Logs & History</span>
+                </button>
+                <button onclick="switchTab('payroll')" id="tab-payroll" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>Monthly Payroll</span>
+                </button>
+                <button onclick="switchTab('staff')" id="tab-staff" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                    <i class="fa-solid fa-users"></i>
+                    <span>Manage Staff</span>
+                </button>
+                <button onclick="switchTab('tasks')" id="tab-tasks" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Manage Tasks</span>
+                </button>
             </div>
+        </nav>
+
+        <!-- MAIN CONTENT CONTAINER -->
+        <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+            <!-- VIEW 1: LOG COMPLETED TASK -->
+            <section id="view-logTask" class="tab-view space-y-6">
+                <div class="max-w-2xl mx-auto bg-white rounded-2xl p-6 sm:p-8 card-shadow border border-slate-100">
+                    <div class="mb-6">
+                        <h2 class="text-xl font-bold text-slate-900 flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-check text-brandPink"></i>
+                            <span>Record Task Completion</span>
+                        </h2>
+                        <p class="text-slate-500 text-sm mt-1">Select staff member and completed task to assign earnings.</p>
+                    </div>
+
+                    <form id="recordTaskForm" onsubmit="saveTaskLog(event)" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Select Sales / Staff Person *</label>
+                            <select id="logStaffSelect" required class="w-full py-3 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink focus:border-transparent">
+                                <option value="">-- Choose Staff Member --</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Select Service / Task *</label>
+                            <select id="logTaskSelect" required onchange="calculateLogPreview()" class="w-full py-3 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink focus:border-transparent">
+                                <option value="">-- Choose Completed Task --</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Sale Amount (Rs.) *</label>
+                                <input type="number" id="logSaleAmount" required min="0" step="0.01" oninput="calculateLogPreview()" class="w-full py-3 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink focus:border-transparent" placeholder="e.g. 2500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Date & Time *</label>
+                                <input type="datetime-local" id="logDateTime" required class="w-full py-3 px-4 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink focus:border-transparent">
+                            </div>
+                        </div>
+
+                        <div id="logPreviewCard" class="bg-pink-50 rounded-xl p-4 border border-pink-200 hidden space-y-1">
+                            <div class="text-xs font-bold text-brandPink uppercase">Commission Preview</div>
+                            <div class="text-2xl font-black text-slate-900" id="previewCommissionRs">Rs. 0.00</div>
+                            <div class="text-xs text-slate-600" id="previewCommissionRule">Rule: -</div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-brandPink hover:bg-brandPinkDark text-white font-bold py-3 rounded-lg shadow-lg shadow-pink-500/20 transition-all flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-plus-circle"></i>
+                            <span>Save Task Entry</span>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- VIEW 2: LOGS & HISTORY -->
+            <section id="view-history" class="tab-view space-y-6 hidden">
+                <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Task Execution Logs</h2>
+                            <p class="text-slate-500 text-sm">Detailed history of services logged by admins</p>
+                        </div>
+                        
+                        <div class="flex flex-wrap items-center gap-3">
+                            <input type="text" id="historySearch" oninput="renderHistoryTable()" placeholder="Search staff or task..." class="py-2 px-3 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink">
+                            <select id="historyStaffFilter" onchange="renderHistoryTable()" class="py-2 px-3 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink">
+                                <option value="ALL">All Staff</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-semibold uppercase">
+                                    <th class="py-3 px-4">Date & Time</th>
+                                    <th class="py-3 px-4">Staff Member</th>
+                                    <th class="py-3 px-4">Task Completed</th>
+                                    <th class="py-3 px-4">Sale Amount (Rs.)</th>
+                                    <th class="py-3 px-4">Commission Earned (Rs.)</th>
+                                    <th class="py-3 px-4">Logged By</th>
+                                    <th class="py-3 px-4 text-right admin-only">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTableBody" class="divide-y divide-slate-100">
+                                <!-- Log rows inserted dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: MONTHLY PAYROLL (MAIN ADMIN ONLY) -->
+            <section id="view-payroll" class="tab-view space-y-6 hidden admin-only">
+                <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">Monthly Earnings & Payroll</h2>
+                            <p class="text-slate-500 text-sm">Base salary + earned task commissions</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <label class="text-sm font-semibold text-slate-600">Select Month:</label>
+                            <input type="month" id="payrollMonth" onchange="renderPayrollTable()" class="py-2 px-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink font-semibold">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-semibold uppercase">
+                                    <th class="py-3 px-4">Staff Member</th>
+                                    <th class="py-3 px-4">Base Salary (Rs.)</th>
+                                    <th class="py-3 px-4">Tasks Completed</th>
+                                    <th class="py-3 px-4">Total Sales Volume (Rs.)</th>
+                                    <th class="py-3 px-4">Total Commission (Rs.)</th>
+                                    <th class="py-3 px-4 text-brandPink font-bold">Total Payout (Rs.)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payrollTableBody" class="divide-y divide-slate-100">
+                                <!-- Dynamic payroll summary -->
+                            </tbody>
+                            <tfoot>
+                                <tr class="bg-pink-50 font-bold border-t border-pink-200">
+                                    <td class="py-3 px-4">Total Payroll</td>
+                                    <td class="py-3 px-4" id="totalBaseSalary">Rs. 0.00</td>
+                                    <td class="py-3 px-4" id="totalTasksCompleted">0</td>
+                                    <td class="py-3 px-4" id="totalSalesVolume">Rs. 0.00</td>
+                                    <td class="py-3 px-4" id="totalCommissions">Rs. 0.00</td>
+                                    <td class="py-3 px-4 text-brandPink text-base" id="totalPayout">Rs. 0.00</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: MANAGE STAFF (MAIN ADMIN ONLY) -->
+            <section id="view-staff" class="tab-view space-y-6 hidden admin-only">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-user-plus text-brandPink"></i>
+                            <span>Add New Staff</span>
+                        </h3>
+                        <form id="addStaffForm" onsubmit="handleAddStaff(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Full Name *</label>
+                                <input type="text" id="staffName" required class="w-full py-2.5 px-3.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink" placeholder="e.g. Samantha Perera">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Base Monthly Salary (Rs.) *</label>
+                                <input type="number" id="staffBaseSalary" required min="0" step="100" class="w-full py-2.5 px-3.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink" placeholder="e.g. 45000">
+                            </div>
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg transition-all">
+                                Add Staff Member
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Current Staff Roster</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-semibold uppercase">
+                                        <th class="py-3 px-4">Name</th>
+                                        <th class="py-3 px-4">Base Salary (Rs.)</th>
+                                        <th class="py-3 px-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="staffTableBody" class="divide-y divide-slate-100">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: MANAGE TASKS & COMMISSIONS (MAIN ADMIN ONLY) -->
+            <section id="view-tasks" class="tab-view space-y-6 hidden admin-only">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                            <i class="fa-solid fa-folder-plus text-brandPink"></i>
+                            <span>Add New Task / Service</span>
+                        </h3>
+                        <form id="addTaskForm" onsubmit="handleAddTask(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Service/Task Name *</label>
+                                <input type="text" id="taskName" required class="w-full py-2.5 px-3.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink" placeholder="e.g. Gel Manicure Full Set">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Commission Structure *</label>
+                                <select id="taskCommType" onchange="toggleCommInput()" class="w-full py-2.5 px-3.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink">
+                                    <option value="PERCENTAGE">Percentage (%)</option>
+                                    <option value="FIXED">Fixed Amount (Rs.)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1" id="commValueLabel">Commission Percentage (%) *</label>
+                                <input type="number" id="taskCommValue" required min="0" step="0.01" class="w-full py-2.5 px-3.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink" placeholder="e.g. 15">
+                            </div>
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg transition-all">
+                                Create Task
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-white rounded-2xl p-6 card-shadow border border-slate-100">
+                        <h3 class="text-lg font-bold text-slate-900 mb-4">Service & Commission Catalog</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm border-collapse">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-200 text-slate-500 text-xs font-semibold uppercase">
+                                        <th class="py-3 px-4">Task Name</th>
+                                        <th class="py-3 px-4">Commission Type</th>
+                                        <th class="py-3 px-4">Commission Rate</th>
+                                        <th class="py-3 px-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="taskTableBody" class="divide-y divide-slate-100">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- SECURITY & ACCOUNT MODAL -->
+    <div id="securityModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="bg-white rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100">
+            <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-halved text-brandPink"></i>
+                    <span>Account Security Settings</span>
+                </h3>
+                <button onclick="closeSecurityModal()" class="text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+
+            <form id="changePasswordForm" onsubmit="handleChangePassword(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Logged In User</label>
+                    <input type="text" id="secCurrentUsername" readonly class="w-full py-2.5 px-3 bg-slate-100 font-bold text-slate-700 rounded-lg border border-slate-200 cursor-not-allowed">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">New Password *</label>
+                    <input type="password" id="secNewPassword" required minlength="6" class="w-full py-2.5 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink" placeholder="At least 6 characters">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Confirm New Password *</label>
+                    <input type="password" id="secConfirmPassword" required minlength="6" class="w-full py-2.5 px-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brandPink" placeholder="Re-enter new password">
+                </div>
+                
+                <div id="secError" class="hidden text-xs text-red-500 font-semibold bg-red-50 p-2.5 rounded border border-red-200"></div>
+                <div id="secSuccess" class="hidden text-xs text-green-600 font-semibold bg-green-50 p-2.5 rounded border border-green-200">Password updated successfully!</div>
+
+                <div class="pt-2 flex justify-end space-x-3">
+                    <button type="button" onclick="closeSecurityModal()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 text-sm font-semibold rounded-lg">Cancel</button>
+                    <button type="submit" class="px-5 py-2 bg-brandPink hover:bg-brandPinkDark text-white text-sm font-bold rounded-lg shadow-md">Update Password</button>
+                </div>
+            </form>
         </div>
-    </footer>
+    </div>
 
-    <!-- JAVASCRIPT APPLICATION CORE -->
+    <!-- MAIN JAVASCRIPT ARCHITECTURE -->
     <script>
-        const SALT = "PinkNailSalonSecretSalt_2026";
-        let USER_CREDENTIALS = {};
-
-        // Web Crypto API PBKDF2 Hashing
+        // --- SECURITY CRYPTOGRAPHIC HELPERS (PBKDF2 SHA-256 Hashing) ---
         async function hashPassword(password, salt) {
             const encoder = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
-                'raw', encoder.encode(password), 'PBKDF2', false, ['deriveBits', 'deriveKey']
+                'raw', 
+                encoder.encode(password), 
+                { name: 'PBKDF2' }, 
+                false, 
+                ['deriveBits', 'deriveKey']
             );
             const derivedKey = await crypto.subtle.deriveKey(
                 {
@@ -529,633 +432,489 @@
                 ['encrypt', 'decrypt']
             );
             const exported = await crypto.subtle.exportKey('raw', derivedKey);
-            const hashArray = Array.from(new Uint8Array(exported));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+            return Array.from(new Uint8Array(exported)).map(b => b.toString(16).padStart(2, '0')).join('');
         }
 
-        async function initCredentials() {
-            const stored = localStorage.getItem('pink_saloon_creds');
-            if (stored) {
-                USER_CREDENTIALS = JSON.parse(stored);
-            } else {
-                USER_CREDENTIALS = {
-                    'admin': {
-                        role: 'MAIN_ADMIN',
-                        name: 'Main Administrator',
-                        hash: await hashPassword('admin123', SALT)
-                    },
-                    'admin2': {
-                        role: 'ADMIN_2',
-                        name: 'Assistant Admin 2',
-                        hash: await hashPassword('staff123', SALT)
-                    }
-                };
-                localStorage.setItem('pink_saloon_creds', JSON.stringify(USER_CREDENTIALS));
-            }
-        }
+        const GLOBAL_SALT = 'PinkNailSalonSecureSalt2026';
 
-        let currentUser = null;
-
-        // Salon State (Local Storage Persistence)
-        let staffList = JSON.parse(localStorage.getItem('pink_staff')) || [
-            { id: 'stf_1', name: 'Nirosha Perera', baseSalary: 45000, phone: '+94 77 123 4567' },
-            { id: 'stf_2', name: 'Kavindi Fernando', baseSalary: 40000, phone: '+94 71 987 6543' },
-            { id: 'stf_3', name: 'Dilhani Silva', baseSalary: 38000, phone: '+94 75 555 0192' }
-        ];
-
-        let serviceList = JSON.parse(localStorage.getItem('pink_services')) || [
-            { id: 'srv_1', title: 'Gel Nail Extensions (Full Set)', price: 6500, commType: 'PERCENTAGE', commValue: 15 },
-            { id: 'srv_2', title: 'Classic Pedicure & Polish', price: 3500, commType: 'PERCENTAGE', commValue: 10 },
-            { id: 'srv_3', title: 'Custom 3D Nail Art (Per Nail)', price: 1500, commType: 'FIXED', commValue: 300 },
-            { id: 'srv_4', title: 'Acrylic Overlay & Refill', price: 4800, commType: 'PERCENTAGE', commValue: 12 },
-            { id: 'srv_5', title: 'Express Manicure', price: 2200, commType: 'FIXED', commValue: 250 }
-        ];
-
-        let taskLogs = JSON.parse(localStorage.getItem('pink_task_logs')) || [
-            {
-                id: 'log_1',
-                staffId: 'stf_1',
-                staffName: 'Nirosha Perera',
-                serviceId: 'srv_1',
-                serviceTitle: 'Gel Nail Extensions (Full Set)',
-                saleAmount: 6500,
-                commissionEarned: 975,
-                dateTime: new Date(Date.now() - 86400000 * 2).toISOString(),
-                notes: 'Client: Ombre glitter finish',
-                loggedBy: 'admin'
+        // --- INITIAL DATA SEEDS ---
+        const DEFAULT_USERS = {
+            'admin': {
+                role: 'ADMIN_MAIN',
+                displayName: 'Main Admin',
+                // Hashed version of 'admin123'
+                passwordHash: '' 
             },
-            {
-                id: 'log_2',
-                staffId: 'stf_2',
-                staffName: 'Kavindi Fernando',
-                serviceId: 'srv_2',
-                serviceTitle: 'Classic Pedicure & Polish',
-                saleAmount: 3500,
-                commissionEarned: 350,
-                dateTime: new Date(Date.now() - 86400000 * 1).toISOString(),
-                notes: 'Client: French tips',
-                loggedBy: 'admin2'
+            'admin2': {
+                role: 'ADMIN_OPERATIONAL',
+                displayName: 'Admin 2 (Operational)',
+                // Hashed version of 'staff123'
+                passwordHash: ''
             }
+        };
+
+        const DEFAULT_STAFF = [
+            { id: 'st_1', name: 'Nisansala Perera', baseSalary: 45000 },
+            { id: 'st_2', name: 'Dilhani Silva', baseSalary: 48000 },
+            { id: 'st_3', name: 'Kavindi Fernando', baseSalary: 42000 }
         ];
 
-        function saveData() {
-            localStorage.setItem('pink_staff', JSON.stringify(staffList));
-            localStorage.setItem('pink_services', JSON.stringify(serviceList));
-            localStorage.setItem('pink_task_logs', JSON.stringify(taskLogs));
-            localStorage.setItem('pink_saloon_creds', JSON.stringify(USER_CREDENTIALS));
+        const DEFAULT_TASKS = [
+            { id: 'tk_1', name: 'Acrylic Nail Extensions', type: 'PERCENTAGE', rate: 15 },
+            { id: 'tk_2', name: 'Gel Polish Manicure', type: 'PERCENTAGE', rate: 10 },
+            { id: 'tk_3', name: 'Spa Pedicure', type: 'FIXED', rate: 500 },
+            { id: 'tk_4', name: 'Nail Art Design (Per Nail)', type: 'FIXED', rate: 150 }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let currentUser = null;
+        let users = {};
+        let staffList = [];
+        let taskList = [];
+        let logList = [];
+
+        // --- INITIALIZATION ---
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initializeStorage();
+            setDefaultDateTime();
+            checkSession();
+        });
+
+        async function initializeStorage() {
+            // Setup default hashed passwords if not in localStorage
+            if (!localStorage.getItem('pns_users')) {
+                DEFAULT_USERS['admin'].passwordHash = await hashPassword('admin123', GLOBAL_SALT);
+                DEFAULT_USERS['admin2'].passwordHash = await hashPassword('staff123', GLOBAL_SALT);
+                localStorage.setItem('pns_users', JSON.stringify(DEFAULT_USERS));
+            }
+            users = JSON.parse(localStorage.getItem('pns_users'));
+
+            if (!localStorage.getItem('pns_staff')) {
+                localStorage.setItem('pns_staff', JSON.stringify(DEFAULT_STAFF));
+            }
+            staffList = JSON.parse(localStorage.getItem('pns_staff'));
+
+            if (!localStorage.getItem('pns_tasks')) {
+                localStorage.setItem('pns_tasks', JSON.stringify(DEFAULT_TASKS));
+            }
+            taskList = JSON.parse(localStorage.getItem('pns_tasks'));
+
+            if (!localStorage.getItem('pns_logs')) {
+                localStorage.setItem('pns_logs', JSON.stringify([]));
+            }
+            logList = JSON.parse(localStorage.getItem('pns_logs'));
+
+            // Default current month for payroll
+            const now = new Date();
+            const monthStr = now.toISOString().slice(0, 7);
+            document.getElementById('payrollMonth').value = monthStr;
         }
 
+        function setDefaultDateTime() {
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('logDateTime').value = now.toISOString().slice(0, 16);
+        }
+
+        // --- AUTHENTICATION ---
         async function handleLogin(e) {
             e.preventDefault();
-            const usernameInput = document.getElementById('loginUsername').value;
+            const usernameInput = document.getElementById('loginUsername').value.trim().toLowerCase();
             const passwordInput = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
+            const errorEl = document.getElementById('loginError');
 
-            errorDiv.classList.add('hidden');
+            errorEl.classList.add('hidden');
 
-            const targetUser = USER_CREDENTIALS[usernameInput];
-            if (!targetUser) {
-                showLoginError("Invalid username.");
-                return;
+            if (users[usernameInput]) {
+                const inputHash = await hashPassword(passwordInput, GLOBAL_SALT);
+                if (inputHash === users[usernameInput].passwordHash) {
+                    currentUser = {
+                        username: usernameInput,
+                        ...users[usernameInput]
+                    };
+                    sessionStorage.setItem('pns_session', JSON.stringify(currentUser));
+                    applyUserPermissions();
+                    document.getElementById('loginScreen').classList.add('hidden');
+                    document.getElementById('appScreen').classList.remove('hidden');
+                    renderAll();
+                    return;
+                }
             }
-
-            const inputHash = await hashPassword(passwordInput, SALT);
-
-            if (inputHash === targetUser.hash) {
-                currentUser = {
-                    username: usernameInput,
-                    role: targetUser.role,
-                    name: targetUser.name
-                };
-                setupUserSession();
-            } else {
-                showLoginError("Incorrect password. Please verify.");
-            }
+            errorEl.classList.remove('hidden');
         }
 
-        function showLoginError(msg) {
-            const errorDiv = document.getElementById('loginError');
-            errorDiv.innerText = msg;
-            errorDiv.classList.remove('hidden');
-        }
-
-        function setupUserSession() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            document.getElementById('authStatusContainer').classList.remove('hidden');
-
-            document.getElementById('loggedInUserDisplay').innerText = currentUser.name;
-            document.getElementById('loggedInRoleDisplay').innerText = currentUser.role === 'MAIN_ADMIN' ? 'Main Administrator' : 'Admin 2 (Assistant)';
-
-            const adminButtons = document.querySelectorAll('.admin-only');
-            if (currentUser.role === 'ADMIN_2') {
-                adminButtons.forEach(btn => btn.classList.add('hidden'));
-            } else {
-                adminButtons.forEach(btn => btn.classList.remove('hidden'));
+        function checkSession() {
+            const session = sessionStorage.getItem('pns_session');
+            if (session) {
+                currentUser = JSON.parse(session);
+                applyUserPermissions();
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('appScreen').classList.remove('hidden');
+                renderAll();
             }
-
-            const now = new Date();
-            const timezoneOffset = now.getTimezoneOffset() * 60000;
-            const localISOTime = (new Date(now - timezoneOffset)).toISOString().slice(0, 16);
-            document.getElementById('logDateTime').value = localISOTime;
-
-            const currentYearMonth = now.toISOString().slice(0, 7);
-            document.getElementById('payrollMonthSelect').value = currentYearMonth;
-            document.getElementById('filterMonthSelect').value = currentYearMonth;
-
-            populateDropdowns();
-            renderRecentActivity();
-            renderTaskLogsTable();
-            renderMonthlyEarnings();
-            renderStaffDirectory();
-            renderServicesDirectory();
-
-            switchTab('logTask');
         }
 
         function logout() {
+            sessionStorage.removeItem('pns_session');
             currentUser = null;
-            document.getElementById('loginPassword').value = '';
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('authStatusContainer').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('appScreen').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
         }
 
-        function togglePasswordVisibility(id) {
-            const field = document.getElementById(id);
-            field.type = field.type === 'password' ? 'text' : 'password';
+        function applyUserPermissions() {
+            const badge = document.getElementById('userBadge');
+            badge.innerText = currentUser.displayName;
+
+            const adminElements = document.querySelectorAll('.admin-only');
+            if (currentUser.role === 'ADMIN_MAIN') {
+                adminElements.forEach(el => el.classList.remove('hidden'));
+            } else {
+                adminElements.forEach(el => el.classList.add('hidden'));
+                switchTab('logTask');
+            }
         }
 
+        // --- NAVIGATION TABS ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
-                btn.classList.add('text-slate-600', 'hover:bg-rose-50');
+            document.querySelectorAll('nav button').forEach(btn => {
+                btn.classList.remove('border-brandPink', 'text-brandPink');
+                btn.classList.add('border-transparent', 'text-slate-500');
             });
 
-            document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tab-${tabId}`);
+            document.getElementById(`view-${tabId}`).classList.remove('hidden'); const activeBtn = document.getElementById(`tab-${tabId}`);
             if (activeBtn) {
-                activeBtn.classList.remove('text-slate-600', 'hover:bg-rose-50');
-                activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
+                activeBtn.classList.remove('border-transparent', 'text-slate-500');
+                activeBtn.classList.add('border-brandPink', 'text-brandPink');
             }
         }
 
-        function populateDropdowns() {
-            const logStaffSelect = document.getElementById('logStaffSelect');
-            const filterStaffSelect = document.getElementById('filterStaffSelect');
-
-            logStaffSelect.innerHTML = staffList.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            filterStaffSelect.innerHTML = `<option value="ALL">All Staff Members</option>` + staffList.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-
-            const logTaskSelect = document.getElementById('logTaskSelect');
-            logTaskSelect.innerHTML = serviceList.map(s => {
-                const commText = s.commType === 'PERCENTAGE' ? `${s.commValue}%` : `Rs. ${s.commValue}`;
-                return `<option value="${s.id}">${s.title} - Price: Rs. ${s.price} (${commText})</option>`;
-            }).join('');
-
-            onTaskSelectChange();
+        // --- RENDER ENGINE ---
+        function renderAll() {
+            populateSelects();
+            renderHistoryTable();
+            renderPayrollTable();
+            renderStaffTable();
+            renderTaskTable();
         }
 
-        function onTaskSelectChange() {
-            const taskId = document.getElementById('logTaskSelect').value;
-            const task = serviceList.find(s => s.id === taskId);
-            if (task) {
-                document.getElementById('logSaleAmount').value = task.price;
-                calculatePreviewCommission();
-            }
+        function populateSelects() {
+            const staffSelect = document.getElementById('logStaffSelect');
+            const taskSelect = document.getElementById('logTaskSelect');
+            const historyFilter = document.getElementById('historyStaffFilter');
+
+            staffSelect.innerHTML = '<option value="">-- Choose Staff Member --</option>';
+            historyFilter.innerHTML = '<option value="ALL">All Staff Members</option>';
+
+            staffList.forEach(staff => {
+                staffSelect.innerHTML += `<option value="${staff.id}">${staff.name}</option>`;
+                historyFilter.innerHTML += `<option value="${staff.id}">${staff.name}</option>`;
+            });
+
+            taskSelect.innerHTML = '<option value="">-- Choose Completed Task --</option>';
+            taskList.forEach(task => {
+                const label = task.type === 'PERCENTAGE' ? `${task.name} (${task.rate}%)` : `${task.name} (Fixed Rs.${task.rate})`;
+                taskSelect.innerHTML += `<option value="${task.id}">${label}</option>`;
+            });
         }
 
-        function calculatePreviewCommission() {
+        // --- TASK LOGGING & COMMISSIONS ---
+        function calculateLogPreview() {
             const taskId = document.getElementById('logTaskSelect').value;
             const saleAmount = parseFloat(document.getElementById('logSaleAmount').value) || 0;
-            const task = serviceList.find(s => s.id === taskId);
+            const previewCard = document.getElementById('logPreviewCard');
+            const rsEl = document.getElementById('previewCommissionRs');
+            const ruleEl = document.getElementById('previewCommissionRule');
 
+            if (!taskId || saleAmount <= 0) {
+                previewCard.classList.add('hidden');
+                return;
+            }
+
+            const task = taskList.find(t => t.id === taskId);
             if (!task) return;
 
-            let comm = task.commType === 'PERCENTAGE' ? (saleAmount * task.commValue) / 100 : task.commValue;
-            let ruleText = task.commType === 'PERCENTAGE' ? `Rule: ${task.commValue}% of total sale` : `Rule: Fixed Rs. ${task.commValue} per service`;
+            let commission = 0;
+            if (task.type === 'PERCENTAGE') {
+                commission = (saleAmount * task.rate) / 100;
+                ruleEl.innerText = `Rule: ${task.rate}\% of Rs.${saleAmount.toLocaleString()}`;
+            } else {
+                commission = task.rate;
+                ruleEl.innerText = `Rule: Fixed Rs. ${task.rate.toLocaleString()} per task`;
+            }
 
-            document.getElementById('commissionRuleBadge').innerText = ruleText;
-            document.getElementById('previewCommissionAmount').innerText = `Rs. ${comm.toFixed(2)}`;
+            rsEl.innerText = `Rs. ${commission.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            previewCard.classList.remove('hidden');
         }
 
-        function submitTaskCompletion(e) {
+        function saveTaskLog(e) {
             e.preventDefault();
             const staffId = document.getElementById('logStaffSelect').value;
             const taskId = document.getElementById('logTaskSelect').value;
             const saleAmount = parseFloat(document.getElementById('logSaleAmount').value);
             const dateTime = document.getElementById('logDateTime').value;
-            const notes = document.getElementById('logNotes').value;
 
             const staff = staffList.find(s => s.id === staffId);
-            const task = serviceList.find(s => s.id === taskId);
+            const task = taskList.find(t => t.id === taskId);
 
-            if (!staff || !task) return;
-
-            let comm = task.commType === 'PERCENTAGE' ? (saleAmount * task.commValue) / 100 : task.commValue;
+            let commissionAmount = 0;
+            if (task.type === 'PERCENTAGE') {
+                commissionAmount = (saleAmount * task.rate) / 100;
+            } else {
+                commissionAmount = task.rate;
+            }
 
             const newLog = {
                 id: 'log_' + Date.now(),
-                staffId: staff.id,
+                staffId,
                 staffName: staff.name,
-                serviceId: task.id,
-                serviceTitle: task.title,
-                saleAmount: saleAmount,
-                commissionEarned: comm,
-                dateTime: new Date(dateTime).toISOString(),
-                notes: notes,
-                loggedBy: currentUser.username
+                taskId,
+                taskName: task.name,
+                saleAmount,
+                commissionAmount,
+                dateTime,
+                loggedBy: currentUser.displayName
             };
 
-            taskLogs.unshift(newLog);
-            saveData();
+            logList.unshift(newLog);
+            localStorage.setItem('pns_logs', JSON.stringify(logList));
 
-            renderRecentActivity();
-            renderTaskLogsTable();
-            renderMonthlyEarnings();
-
-            document.getElementById('logNotes').value = '';
-            showToast("Service entry successfully logged!");
+            // Reset Form & Refresh
+            document.getElementById('recordTaskForm').reset();
+            document.getElementById('logPreviewCard').classList.add('hidden');
+            setDefaultDateTime();
+            renderHistoryTable();
+            renderPayrollTable();
+            
+            alert('Task completion recorded successfully!');
+            switchTab('history');
         }
 
-        function renderRecentActivity() {
-            const container = document.getElementById('recentActivityList');
-            if (taskLogs.length === 0) {
-                container.innerHTML = `<div class="text-xs text-slate-400 py-4 text-center">No tasks recorded yet.</div>`;
-                return;
-            }
+        // --- HISTORY TABLE ---
+        function renderHistoryTable() {
+            const tbody = document.getElementById('historyTableBody');
+            const filterStaff = document.getElementById('historyStaffFilter').value;
+            const search = document.getElementById('historySearch').value.toLowerCase();
 
-            container.innerHTML = taskLogs.slice(0, 6).map(log => {
-                const dateFormatted = new Date(log.dateTime).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-                return `
-                    <div class="p-3 bg-rose-50/40 rounded-2xl border border-rose-100 flex items-center justify-between text-xs">
-                        <div>
-                            <span class="font-bold text-slate-800 block">${log.staffName}</span>
-                            <span class="text-slate-500 block">${log.serviceTitle}</span>
-                            <span class="text-[10px] text-slate-400">${dateFormatted}</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="font-bold text-slate-700 block">Rs. ${log.saleAmount.toLocaleString()}</span>
-                            <span class="font-extrabold text-brand-600">+Rs. ${log.commissionEarned.toLocaleString()}</span>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
+            let filtered = logList.filter(log => {
+                const matchesStaff = filterStaff === 'ALL' || log.staffId === filterStaff;
+                const matchesSearch = log.staffName.toLowerCase().includes(search) || log.taskName.toLowerCase().includes(search);
+                return matchesStaff && matchesSearch;
+            });
 
-        function renderTaskLogsTable() {
-            const staffFilter = document.getElementById('filterStaffSelect').value;
-            const monthFilter = document.getElementById('filterMonthSelect').value;
-            const keyword = document.getElementById('searchLogKeyword').value.toLowerCase();
-
-            let filtered = [...taskLogs];
-
-            if (staffFilter !== 'ALL') {
-                filtered = filtered.filter(l => l.staffId === staffFilter);
-            }
-
-            if (monthFilter) {
-                filtered = filtered.filter(l => l.dateTime.slice(0, 7) === monthFilter);
-            }
-
-            if (keyword) {
-                filtered = filtered.filter(l => 
-                    l.staffName.toLowerCase().includes(keyword) || 
-                    l.serviceTitle.toLowerCase().includes(keyword) ||
-                    (l.notes && l.notes.toLowerCase().includes(keyword))
-                );
-            }
-
-            const tbody = document.getElementById('taskLogsTableBody');
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-xs text-slate-400">No matching task entries found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No task execution logs found.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = filtered.map(log => {
-                const dateFormatted = new Date(log.dateTime).toLocaleString('en-US', { 
-                    year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' 
+            tbody.innerHTML = filtered.map(log => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-mono text-xs text-slate-600">${new Date(log.dateTime).toLocaleString()}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900">${log.staffName}</td>
+                    <td class="py-3 px-4 text-slate-700">${log.taskName}</td>
+                    <td class="py-3 px-4 font-medium">Rs. ${log.saleAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 text-brandPink font-bold">Rs. ${log.commissionAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 text-xs text-slate-500">${log.loggedBy}</td>
+                    <td class="py-3 px-4 text-right admin-only">
+                        <button onclick="deleteLog('${log.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            applyUserPermissions();
+        }
+
+        function deleteLog(logId) {
+            if (currentUser.role !== 'ADMIN_MAIN') return;
+            if (confirm('Are you sure you want to delete this log entry?')) {
+                logList = logList.filter(l => l.id !== logId);
+                localStorage.setItem('pns_logs', JSON.stringify(logList));
+                renderHistoryTable();
+                renderPayrollTable();
+            }
+        }
+
+        // --- PAYROLL TABLE (MAIN ADMIN ONLY) ---
+        function renderPayrollTable() {
+            if (currentUser && currentUser.role !== 'ADMIN_MAIN') return;
+
+            const tbody = document.getElementById('payrollTableBody');
+            const selectedMonth = document.getElementById('payrollMonth').value; // YYYY-MM
+
+            let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
+
+            const rows = staffList.map(staff => {
+                // Filter staff logs for selected month
+                const staffLogs = logList.filter(log => {
+                    return log.staffId === staff.id && log.dateTime.startsWith(selectedMonth);
                 });
 
-                const canDelete = currentUser.role === 'MAIN_ADMIN';
+                const tasksDone = staffLogs.length;
+                const salesVol = staffLogs.reduce((acc, curr) => acc + curr.saleAmount, 0);
+                const commEarned = staffLogs.reduce((acc, curr) => acc + curr.commissionAmount, 0);
+                const totalPayout = staff.baseSalary + commEarned;
+
+                totBase += staff.baseSalary;
+                totTasks += tasksDone;
+                totSales += salesVol;
+                totComm += commEarned;
+                totPayout += totalPayout;
 
                 return `
-                    <tr class="hover:bg-rose-50/30 transition">
-                        <td class="p-3.5 text-slate-600 text-xs font-medium">${dateFormatted}</td>
-                        <td class="p-3.5 font-bold text-slate-800">${log.staffName}</td>
-                        <td class="p-3.5 text-slate-700">${log.serviceTitle}</td>
-                        <td class="p-3.5 font-bold text-slate-800">Rs. ${log.saleAmount.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                        <td class="p-3.5 font-extrabold text-brand-600">Rs. ${log.commissionEarned.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                        <td class="p-3.5 text-xs text-slate-500">${log.notes || '-'}</td>
-                        <td class="p-3.5 text-right">
-                            ${canDelete ? `
-                                <button onclick="deleteTaskLog('${log.id}')" class="text-xs text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-lg" title="Delete Entry">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                </button>
-                            ` : '<span class="text-slate-300 text-xs">—</span>'}
-                        </td>
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="py-3 px-4 font-bold text-slate-900">${staff.name}</td>
+                        <td class="py-3 px-4 text-slate-700">Rs. ${staff.baseSalary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 text-slate-700">${tasksDone}</td>
+                        <td class="py-3 px-4 text-slate-700">Rs. ${salesVol.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-900">Rs. ${commEarned.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 text-brandPink font-black text-base">Rs. ${totalPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                     </tr>
                 `;
             }).join('');
+
+            tbody.innerHTML = rows || `<tr><td colspan="6" class="py-8 text-center text-slate-400">No staff records.</td></tr>`;
+
+            // Update Totals
+            document.getElementById('totalBaseSalary').innerText = `Rs. ${totBase.toLocaleString('en-US', {minimumFractionDigits: 2})}`; document.getElementById('totalTasksCompleted').innerText = totTasks; document.getElementById('totalSalesVolume').innerText = `Rs. ${totSales.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('totalCommissions').innerText = `Rs. ${totComm.toLocaleString('en-US', {minimumFractionDigits: 2})}`; document.getElementById('totalPayout').innerText = `Rs. ${totPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
         }
 
-        function resetTaskLogFilters() {
-            document.getElementById('filterStaffSelect').value = 'ALL';
-            document.getElementById('searchLogKeyword').value = '';
-            document.getElementById('filterMonthSelect').value = new Date().toISOString().slice(0, 7);
-            renderTaskLogsTable();
-        }
-
-        function deleteTaskLog(logId) {
-            if (currentUser.role !== 'MAIN_ADMIN') return;
-            if (confirm("Delete this log entry?")) {
-                taskLogs = taskLogs.filter(l => l.id !== logId);
-                saveData();
-                renderTaskLogsTable();
-                renderRecentActivity();
-                renderMonthlyEarnings();
-                showToast("Task log removed.");
-            }
-        }
-
-        function renderMonthlyEarnings() {
-            const selectedMonth = document.getElementById('payrollMonthSelect').value;
-            const container = document.getElementById('staffEarningsCardsContainer');
-
-            if (!selectedMonth) return;
-
-            const monthLogs = taskLogs.filter(l => l.dateTime.slice(0, 7) === selectedMonth);
-
-            let grandTotalRevenue = 0;
-            let grandTotalCommission = 0;
-            let grandTotalPayroll = 0;
-
-            container.innerHTML = staffList.map(staff => {
-                const staffLogs = monthLogs.filter(l => l.staffId === staff.id);
-                const totalSales = staffLogs.reduce((acc, l) => acc + l.saleAmount, 0);
-                const totalCommission = staffLogs.reduce((acc, l) => acc + l.commissionEarned, 0);
-                const totalEarning = staff.baseSalary + totalCommission;
-
-                grandTotalRevenue += totalSales;
-                grandTotalCommission += totalCommission;
-                grandTotalPayroll += totalEarning;
-
-                return `
-                    <div class="bg-gradient-to-b from-white to-rose-50/30 p-6 rounded-3xl border border-rose-100 shadow-sm">
-                        <div class="flex justify-between items-start mb-4">
-                            <div>
-                                <h4 class="text-base font-bold text-slate-800 font-serif">${staff.name}</h4>
-                                <span class="text-xs text-slate-500">${staffLogs.length} Services Completed</span>
-                            </div>
-                            <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center font-bold text-xs">
-                                <i class="fa-solid fa-calculator"></i>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 border-t border-b border-rose-100 py-3 my-3 text-xs">
-                            <div class="flex justify-between text-slate-600">
-                                <span>Base Monthly Salary:</span>
-                                <span class="font-bold text-slate-800">Rs. ${staff.baseSalary.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                            </div>
-                            <div class="flex justify-between text-slate-600">
-                                <span>Total Revenue Generated:</span>
-                                <span class="font-semibold text-slate-700">Rs. ${totalSales.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                            </div>
-                            <div class="flex justify-between text-brand-700 font-semibold">
-                                <span>Earned Commissions:</span>
-                                <span class="font-bold text-brand-600">+ Rs. ${totalCommission.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                            </div>
-                        </div>
-
-                        <div class="pt-1 flex justify-between items-end">
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Total Monthly Payout</span>
-                                <span class="text-xl font-black text-brand-700">Rs. ${totalEarning.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('kpiTotalRevenue').innerText = `Rs. ${grandTotalRevenue.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-            document.getElementById('kpiTotalCommission').innerText = `Rs. ${grandTotalCommission.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-            document.getElementById('kpiTotalPayroll').innerText = `Rs. ${grandTotalPayroll.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-        }
-
-        function handleCreateStaff(e) {
+        // --- STAFF MANAGEMENT ---
+        function handleAddStaff(e) {
             e.preventDefault();
-            if (currentUser.role !== 'MAIN_ADMIN') return;
+            const name = document.getElementById('staffName').value.trim();
+            const baseSalary = parseFloat(document.getElementById('staffBaseSalary').value);
 
-            const name = document.getElementById('staffNameInput').value;
-            const baseSalary = parseFloat(document.getElementById('staffBaseSalaryInput').value);
-            const phone = document.getElementById('staffPhoneInput').value || 'N/A';
+            const newStaff = {
+                id: 'st_' + Date.now(),
+                name,
+                baseSalary
+            };
 
-            staffList.push({
-                id: 'stf_' + Date.now(),
-                name: name,
-                baseSalary: baseSalary,
-                phone: phone
-            });
+            staffList.push(newStaff);
+            localStorage.setItem('pns_staff', JSON.stringify(staffList));
 
-            saveData();
-            populateDropdowns();
-            renderStaffDirectory();
-            renderMonthlyEarnings();
-
-            document.getElementById('staffNameInput').value = '';
-            document.getElementById('staffBaseSalaryInput').value = '';
-            document.getElementById('staffPhoneInput').value = '';
-
-            showToast(`Staff member "${name}" created.`);
+            document.getElementById('addStaffForm').reset();
+            renderAll();
+            alert('Staff member added successfully!');
         }
 
-        function renderStaffDirectory() {
-            const tbody = document.getElementById('staffDirectoryTableBody');
-            if (staffList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-xs text-slate-400">No staff members created yet.</td></tr>`;
-                return;
+        function deleteStaff(staffId) {
+            if (confirm('Delete this staff member? This will retain past task logs but remove them from active selection.')) {
+                staffList = staffList.filter(s => s.id !== staffId);
+                localStorage.setItem('pns_staff', JSON.stringify(staffList));
+                renderAll();
             }
+        }
 
+        function renderStaffTable() {
+            const tbody = document.getElementById('staffTableBody');
             tbody.innerHTML = staffList.map(s => `
-                <tr class="hover:bg-rose-50/30 transition">
-                    <td class="p-3 font-bold text-slate-800">${s.name}</td>
-                    <td class="p-3 font-bold text-slate-700">Rs. ${s.baseSalary.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                    <td class="p-3 text-xs text-slate-500">${s.phone}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="deleteStaff('${s.id}')" class="text-xs text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-lg" title="Delete Staff">
-                            <i class="fa-solid fa-user-xmark"></i> Delete
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>
+                    <td class="py-3 px-4 text-slate-700">Rs. ${s.baseSalary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteStaff('${s.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
+                            <i class="fa-solid fa-trash-can"></i> Delete
                         </button>
                     </td>
                 </tr>
             `).join('');
         }
 
-        function deleteStaff(id) {
-            if (currentUser.role !== 'MAIN_ADMIN') return;
-            const staff = staffList.find(s => s.id === id);
-            if (!staff) return;
-
-            if (confirm(`Remove staff member "${staff.name}"?`)) {
-                staffList = staffList.filter(s => s.id !== id);
-                saveData();
-                populateDropdowns();
-                renderStaffDirectory();
-                renderMonthlyEarnings();
-                showToast(`Staff member removed.`);
-            }
-        }
-
-        function toggleCommInputType() {
-            const type = document.querySelector('input[name="commType"]:checked').value;
+        // --- TASK MANAGEMENT ---
+        function toggleCommInput() {
+            const type = document.getElementById('taskCommType').value;
             const label = document.getElementById('commValueLabel');
-            const input = document.getElementById('serviceCommValueInput');
-
-            if (type === 'PERCENTAGE') {
-                label.innerText = 'Commission Rate (%)';
-                input.placeholder = '15';
-            } else {
-                label.innerText = 'Fixed Commission Amount (Rs.)';
-                input.placeholder = '300';
-            }
+            label.innerText = type === 'PERCENTAGE' ? 'Commission Percentage (%) *' : 'Fixed Commission Amount (Rs.) *';
         }
 
-        function handleCreateService(e) {
+        function handleAddTask(e) {
             e.preventDefault();
-            if (currentUser.role !== 'MAIN_ADMIN') return;
+            const name = document.getElementById('taskName').value.trim();
+            const type = document.getElementById('taskCommType').value;
+            const rate = parseFloat(document.getElementById('taskCommValue').value);
 
-            const title = document.getElementById('serviceTitleInput').value;
-            const price = parseFloat(document.getElementById('servicePriceInput').value);
-            const commType = document.querySelector('input[name="commType"]:checked').value;
-            const commValue = parseFloat(document.getElementById('serviceCommValueInput').value);
+            const newTask = {
+                id: 'tk_' + Date.now(),
+                name,
+                type,
+                rate
+            };
 
-            serviceList.push({
-                id: 'srv_' + Date.now(),
-                title: title,
-                price: price,
-                commType: commType,
-                commValue: commValue
-            });
+            taskList.push(newTask);
+            localStorage.setItem('pns_tasks', JSON.stringify(taskList));
 
-            saveData();
-            populateDropdowns();
-            renderServicesDirectory();
-
-            document.getElementById('serviceTitleInput').value = '';
-            document.getElementById('servicePriceInput').value = '';
-            document.getElementById('serviceCommValueInput').value = '';
-
-            showToast(`Service "${title}" created.`);
+            document.getElementById('addTaskForm').reset();
+            renderAll();
+            alert('Task created successfully!');
         }
 
-        function renderServicesDirectory() {
-            const tbody = document.getElementById('servicesDirectoryTableBody');
-            if (serviceList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-xs text-slate-400">No services created yet.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = serviceList.map(s => {
-                const commBadge = s.commType === 'PERCENTAGE' 
-                    ? `<span class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-full text-xs font-bold">${s.commValue}% of sale</span>`
-                    : `<span class="bg-purple-50 text-purple-700 px-2.5 py-1 rounded-full text-xs font-bold">Fixed Rs. ${s.commValue}</span>`;
-
-                return `
-                    <tr class="hover:bg-rose-50/30 transition">
-                        <td class="p-3 font-bold text-slate-800">${s.title}</td>
-                        <td class="p-3 font-bold text-slate-700">Rs. ${s.price.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
-                        <td class="p-3">${commBadge}</td>
-                        <td class="p-3 text-right">
-                            <button onclick="deleteService('${s.id}')" class="text-xs text-red-500 hover:text-red-700 bg-red-50 p-1.5 rounded-lg" title="Delete Service">
-                                <i class="fa-solid fa-trash-can"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function deleteService(id) {
-            if (currentUser.role !== 'MAIN_ADMIN') return;
-            const srv = serviceList.find(s => s.id === id);
-            if (!srv) return;
-
-            if (confirm(`Delete service "${srv.title}"?`)) {
-                serviceList = serviceList.filter(s => s.id !== id);
-                saveData();
-                populateDropdowns();
-                renderServicesDirectory();
-                showToast("Service removed.");
+        function deleteTask(taskId) {
+            if (confirm('Delete this task category?')) {
+                taskList = taskList.filter(t => t.id !== taskId);
+                localStorage.setItem('pns_tasks', JSON.stringify(taskList));
+                renderAll();
             }
         }
 
-        // Account Security Modal Handlers
+        function renderTaskTable() {
+            const tbody = document.getElementById('taskTableBody');
+            tbody.innerHTML = taskList.map(t => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-semibold text-slate-900">${t.name}</td>
+                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded">${t.type}</span></td>
+                    <td class="py-3 px-4 font-bold text-slate-800">${t.type === 'PERCENTAGE' ? t.rate + '%' : 'Rs. ' + t.rate.toLocaleString()}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
+                            <i class="fa-solid fa-trash-can"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- SECURITY MODAL & PASSWORD UPDATE ---
         function openSecurityModal() {
-            document.getElementById('securityModalMessage').classList.add('hidden');
+            document.getElementById('secCurrentUsername').value = currentUser.displayName + ` (${currentUser.username})`;
+            document.getElementById('secError').classList.add('hidden');
+            document.getElementById('secSuccess').classList.add('hidden');
+            document.getElementById('changePasswordForm').reset();
             document.getElementById('securityModal').classList.remove('hidden');
-            document.getElementById('securityModal').classList.add('flex');
         }
 
         function closeSecurityModal() {
             document.getElementById('securityModal').classList.add('hidden');
-            document.getElementById('securityModal').classList.remove('flex');
         }
 
-        async function handlePasswordChange(e) {
+        async function handleChangePassword(e) {
             e.preventDefault();
-            const currPass = document.getElementById('currPassInput').value;
-            const newPass = document.getElementById('newPassInput').value;
-            const confirmPass = document.getElementById('confirmNewPassInput').value;
-            const msgDiv = document.getElementById('securityModalMessage');
+            const newPass = document.getElementById('secNewPassword').value;
+            const confirmPass = document.getElementById('secConfirmPassword').value;
+            const errEl = document.getElementById('secError');
+            const succEl = document.getElementById('secSuccess');
 
-            msgDiv.classList.add('hidden');
-
-            const currHash = await hashPassword(currPass, SALT);
-
-            if (currHash !== USER_CREDENTIALS[currentUser.username].hash) {
-                msgDiv.innerText = "Current password is incorrect.";
-                msgDiv.className = "text-xs p-2.5 rounded-lg text-center font-medium bg-red-50 text-red-600 border border-red-200 block";
-                return;
-            }
+            errEl.classList.add('hidden');
+            succEl.classList.add('hidden');
 
             if (newPass !== confirmPass) {
-                msgDiv.innerText = "New passwords do not match.";
-                msgDiv.className = "text-xs p-2.5 rounded-lg text-center font-medium bg-red-50 text-red-600 border border-red-200 block";
+                errEl.innerText = "New passwords do not match!";
+                errEl.classList.remove('hidden');
                 return;
             }
 
-            // Save new hash
-            USER_CREDENTIALS[currentUser.username].hash = await hashPassword(newPass, SALT);
-            saveData();
+            // Compute hash for new password
+            const newHash = await hashPassword(newPass, GLOBAL_SALT);
+            users[currentUser.username].passwordHash = newHash;
+            localStorage.setItem('pns_users', JSON.stringify(users));
 
-            msgDiv.innerText = "Password updated successfully!";
-            msgDiv.className = "text-xs p-2.5 rounded-lg text-center font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 block";
-
-            document.getElementById('currPassInput').value = '';
-            document.getElementById('newPassInput').value = '';
-            document.getElementById('confirmNewPassInput').value = '';
-
+            succEl.classList.remove('hidden');
             setTimeout(() => {
                 closeSecurityModal();
-            }, 1200);
+            }, 1500);
         }
-
-        function showToast(message) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2 z-50 border border-slate-700 transition transform translate-y-4 opacity-0';
-            toast.innerHTML = `<i class="fa-solid fa-circle-check text-brand-400 text-sm"></i> ${message}`;
-            document.body.appendChild(toast);
-
-            setTimeout(() => toast.classList.remove('translate-y-4', 'opacity-0'), 10);
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-4');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        window.onload = function() {
-            initCredentials();
-        };
     </script>
 </body>
 </html>
