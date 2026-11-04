@@ -40,7 +40,7 @@
             <div class="text-center mb-8">
                 <!-- Salon Logo -->
                 <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-pink-50 mb-3 border-4 border-pink-200 overflow-hidden shadow-inner">
-                    <img src="412030451_3257868117690536_692561188933673384_n_2.jpg" alt="Pink Nail Salon Logo" class="w-full h-full object-cover">
+                    <img src="412030451_3257868117690536_692561188933673384_n.jpg" alt="Pink Nail Salon Logo" class="w-full h-full object-cover">
                 </div>
                 <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">PINK <span class="text-brandPink">NAIL SALON</span></h1>
                 <p class="text-slate-500 text-sm mt-1">Staff, Task & Commission Portal</p>
@@ -86,7 +86,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-full bg-pink-50 border border-pink-200 overflow-hidden flex items-center justify-center shadow-sm">
-                        <img src="412030451_3257868117690536_692561188933673384_n_2.jpg" alt="Logo" class="w-full h-full object-cover">
+                        <img src="412030451_3257868117690536_692561188933673384_n.jpg" alt="Logo" class="w-full h-full object-cover">
                     </div>
                     <div>
                         <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">PINK <span class="text-brandPink">NAIL SALON</span></h1>
@@ -242,9 +242,9 @@
                                 <label class="text-sm font-semibold text-slate-600">Select Month:</label>
                                 <input type="month" id="payrollMonth" onchange="renderPayrollTable()" class="py-2 px-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink font-semibold">
                             </div>
-                            <button onclick="exportPayrollToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-all flex items-center space-x-2 text-sm">
+                            <button onclick="exportDetailedPayrollCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-all flex items-center space-x-2 text-sm">
                                 <i class="fa-solid fa-file-excel"></i>
-                                <span>Export Payroll to CSV</span>
+                                <span>Export Detailed Payroll & Tasks (CSV)</span>
                             </button>
                         </div>
                     </div>
@@ -749,15 +749,18 @@
             if (historyFilter && currentFilterVal) historyFilter.value = currentFilterVal;
         }
 
-        window.exportPayrollToCSV = function() {
+        // --- COMPREHENSIVE DETAILED PAYROLL & TASK CSV EXPORT ---
+        window.exportDetailedPayrollCSV = function() {
             const selectedMonth = document.getElementById('payrollMonth').value || new Date().toISOString().slice(0, 7);
             let csvContent = "data:text/csv;charset=utf-8,";
             
+            // Section 1: Staff Monthly Summary
+            csvContent += "=== MONTHLY PAYROLL SUMMARY ===\n";
             csvContent += "Staff Name,Base Salary (LKR),Tasks Completed,Total Sales Volume (LKR),Total Commission (LKR),Total Payout (LKR)\n";
 
             let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
 
-            window.staffList.forEach(staff => {
+            const staffSummaries = window.staffList.map(staff => {
                 const staffLogs = window.logList.filter(log => log.staffId === staff.id && log.dateTime.startsWith(selectedMonth));
                 const tasksDone = staffLogs.length;
                 const salesVol = staffLogs.reduce((acc, curr) => acc + curr.saleAmount, 0);
@@ -770,15 +773,36 @@
                 totComm += commEarned;
                 totPayout += totalPayout;
 
-                csvContent += `"${staff.name.replace(/"/g, '""')}",${staff.baseSalary},${tasksDone},${salesVol},${commEarned},${totalPayout}\n`;
+                return {
+                    name: staff.name,
+                    baseSalary: staff.baseSalary,
+                    tasksDone,
+                    salesVol,
+                    commEarned,
+                    totalPayout
+                };
             });
 
-            csvContent += `TOTALS,${totBase},${totTasks},${totSales},${totComm},${totPayout}\n`;
+            staffSummaries.forEach(s => {
+                csvContent += `"${s.name.replace(/"/g, '""')}",${s.baseSalary},${s.tasksDone},${s.salesVol},${s.commEarned},${s.totalPayout}\n`;
+            });
+
+            csvContent += `TOTALS,${totBase},${totTasks},${totSales},${totComm},${totPayout}\n\n`;
+
+            // Section 2: Every Task Performed by the Team
+            csvContent += "=== DETAILED TASK-BY-TASK EXECUTION LOGS ===\n";
+            csvContent += "Date & Time,Staff Member,Task Completed,Sale Amount (LKR),Commission Earned (LKR),Logged By\n";
+
+            const monthLogs = window.logList.filter(log => log.dateTime.startsWith(selectedMonth));
+            monthLogs.forEach(log => {
+                const formattedDate = new Date(log.dateTime).toLocaleString().replace(/,/g, '');
+                csvContent += `"${formattedDate}","${log.staffName.replace(/"/g, '""')}","${log.taskName.replace(/"/g, '""')}",${log.saleAmount},${log.commissionAmount},"${log.loggedBy}"\n`;
+            });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Pink_Nail_Salon_Payroll_${selectedMonth}.csv`);
+            link.setAttribute("download", `Pink_Nail_Salon_Detailed_Report_${selectedMonth}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
