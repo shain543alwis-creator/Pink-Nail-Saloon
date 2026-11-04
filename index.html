@@ -53,7 +53,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                             <i class="fa-solid fa-user"></i>
                         </span>
-                        <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink focus:border-transparent transition-all" placeholder="admin, admin2, or developer">
+                        <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink focus:border-transparent transition-all" placeholder="Enter username">
                     </div>
                 </div>
 
@@ -75,13 +75,6 @@
                     <span>Sign In</span>
                     <i class="fa-solid fa-arrow-right text-sm"></i>
                 </button>
-
-                <div class="mt-6 pt-6 border-t border-slate-100 text-xs text-slate-400 space-y-1">
-                    <p class="font-semibold text-slate-500 mb-1">Default Demo Credentials:</p>
-                    <p>• <b>Main Admin:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin123</code></p>
-                    <p>• <b>Admin 2:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin2</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">staff123</code></p>
-                    <p>• <b>Developer:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">developer</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">dev123</code></p>
-                </div>
             </form>
         </div>
     </div>
@@ -236,7 +229,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 3: MONTHLY PAYROLL (MAIN ADMIN & DEVELOPER ONLY) -->
+            <!-- VIEW 3: MONTHLY PAYROLL -->
             <section id="view-payroll" class="tab-view space-y-6 hidden admin-only">
                 <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -249,7 +242,6 @@
                                 <label class="text-sm font-semibold text-slate-600">Select Month:</label>
                                 <input type="month" id="payrollMonth" onchange="renderPayrollTable()" class="py-2 px-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink font-semibold">
                             </div>
-                            <!-- EXPORT EXCEL/CSV BUTTON -->
                             <button onclick="exportPayrollToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-all flex items-center space-x-2 text-sm">
                                 <i class="fa-solid fa-file-excel"></i>
                                 <span>Export Payroll to CSV</span>
@@ -286,7 +278,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 4: MANAGE STAFF (MAIN ADMIN & DEVELOPER ONLY) -->
+            <!-- VIEW 4: MANAGE STAFF -->
             <section id="view-staff" class="tab-view space-y-6 hidden admin-only">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit">
@@ -328,7 +320,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 5: MANAGE TASKS & COMMISSIONS (MAIN ADMIN & DEVELOPER ONLY) -->
+            <!-- VIEW 5: MANAGE TASKS & COMMISSIONS -->
             <section id="view-tasks" class="tab-view space-y-6 hidden admin-only">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit">
@@ -378,7 +370,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 6: DEVELOPER CONTROL PANEL (DEVELOPER ROLE ONLY) -->
+            <!-- VIEW 6: DEVELOPER CONTROL PANEL -->
             <section id="view-devControl" class="tab-view space-y-6 hidden dev-only">
                 <div class="bg-white rounded-2xl p-6 card-shadow border border-purple-100">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
@@ -395,7 +387,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- Password Reset Tool -->
                         <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
                             <h3 class="font-bold text-slate-900 mb-4 flex items-center space-x-2">
                                 <i class="fa-solid fa-key text-purple-600"></i>
@@ -421,7 +412,6 @@
                             </form>
                         </div>
 
-                        <!-- System Accounts Overview -->
                         <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
                             <h3 class="font-bold text-slate-900 mb-4 flex items-center space-x-2">
                                 <i class="fa-solid fa-users-gear text-purple-600"></i>
@@ -429,7 +419,6 @@
                             </h3>
 
                             <div class="space-y-3" id="devUsersList">
-                                <!-- Populated dynamically -->
                             </div>
                         </div>
                     </div>
@@ -481,7 +470,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, get, push, remove, update, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // --- FIREBASE REALTIME DATABASE CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyANNAzhAqY8qba2kjhDzaRiOImHeaEwaZ4",
             authDomain: "pink-nail-saloon-1.firebaseapp.com",
@@ -496,7 +484,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- SECURITY CRYPTOGRAPHIC HELPERS (PBKDF2 SHA-256 Hashing) ---
         async function hashPassword(password, salt) {
             const encoder = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
@@ -524,14 +511,12 @@
 
         const GLOBAL_SALT = 'PinkNailSalonSecureSalt2026';
 
-        // --- GLOBAL APP STATE ---
         window.currentUser = null;
         window.staffList = [];
         window.taskList = [];
         window.logList = [];
         window.usersData = {};
 
-        // --- INITIALIZATION ---
         window.addEventListener('DOMContentLoaded', async () => {
             setDefaultDateTime();
             await initializeRealtimeDatabase();
@@ -541,7 +526,6 @@
 
         async function initializeRealtimeDatabase() {
             try {
-                // 1. Seed Users (Admin, Admin2, Developer) if absent
                 const usersRef = ref(db, 'users');
                 const usersSnap = await get(usersRef);
                 const currentUsers = usersSnap.val() || {};
@@ -560,7 +544,6 @@
                     await set(ref(db, 'users/developer'), { role: 'DEVELOPER', displayName: 'System Developer', passwordHash: devHash });
                 }
 
-                // 2. Seed Default Staff if absent
                 const staffRef = ref(db, 'staff');
                 const staffSnap = await get(staffRef);
                 if (!staffSnap.exists()) {
@@ -575,7 +558,6 @@
                     }
                 }
 
-                // 3. Seed Default Tasks if absent
                 const taskRef = ref(db, 'tasks');
                 const taskSnap = await get(taskRef);
                 if (!taskSnap.exists()) {
@@ -598,7 +580,6 @@
             }
         }
 
-        // --- REALTIME LISTENERS ---
         function setupRealtimeListeners() {
             onValue(ref(db, 'users'), (snapshot) => {
                 window.usersData = snapshot.val() || {};
@@ -631,7 +612,6 @@
             document.getElementById('logDateTime').value = now.toISOString().slice(0, 16);
         }
 
-        // --- AUTHENTICATION ---
         window.handleLogin = async function(e) {
             e.preventDefault();
             const usernameInput = document.getElementById('loginUsername').value.trim().toLowerCase();
@@ -697,7 +677,6 @@
             }
         }
 
-        // --- NAVIGATION TABS ---
         window.switchTab = function(tabId) {
             document.querySelectorAll('.tab-view').forEach(view => view.classList.add('hidden'));
             document.querySelectorAll('nav button').forEach(btn => {
@@ -710,14 +689,13 @@
 
             const activeBtn = document.getElementById(`tab-${tabId}`);
             if (activeBtn) {
-                activeBtn.classList.remove('border-transparent', 'text-slate-500');
-                activeBtn.classList.add('border-brandPink', 'text-brandPink');
+                activeBtn.classList.remove('border-transparent', 'text-slate-500', 'text-purple-600');
+                activeBtn.classList.add(tabId === 'devControl' ? 'border-purple-600' : 'border-brandPink', tabId === 'devControl' ? 'text-purple-700' : 'text-brandPink');
             }
 
             renderActiveView();
         }
 
-        // --- RENDER ACTIVE VIEW ---
         function renderActiveView() {
             if (!window.currentUser) return;
 
@@ -771,12 +749,10 @@
             if (historyFilter && currentFilterVal) historyFilter.value = currentFilterVal;
         }
 
-        // --- EXPORT TO EXCEL / CSV ---
         window.exportPayrollToCSV = function() {
             const selectedMonth = document.getElementById('payrollMonth').value || new Date().toISOString().slice(0, 7);
             let csvContent = "data:text/csv;charset=utf-8,";
             
-            // CSV Header Row
             csvContent += "Staff Name,Base Salary (LKR),Tasks Completed,Total Sales Volume (LKR),Total Commission (LKR),Total Payout (LKR)\n";
 
             let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
@@ -797,7 +773,6 @@
                 csvContent += `"${staff.name.replace(/"/g, '""')}",${staff.baseSalary},${tasksDone},${salesVol},${commEarned},${totalPayout}\n`;
             });
 
-            // CSV Summary Row
             csvContent += `TOTALS,${totBase},${totTasks},${totSales},${totComm},${totPayout}\n`;
 
             const encodedUri = encodeURI(csvContent);
@@ -809,7 +784,6 @@
             document.body.removeChild(link);
         }
 
-        // --- TASK LOGGING & COMMISSIONS ---
         window.calculateLogPreview = function() {
             const taskId = document.getElementById('logTaskSelect').value;
             const saleAmount = parseFloat(document.getElementById('logSaleAmount').value) || 0;
@@ -882,7 +856,6 @@
             }
         }
 
-        // --- HISTORY TABLE ---
         window.renderHistoryTable = function() {
             const tbody = document.getElementById('historyTableBody');
             const filterStaffEl = document.getElementById('historyStaffFilter');
@@ -934,7 +907,6 @@
             }
         }
 
-        // --- PAYROLL TABLE ---
         window.renderPayrollTable = function() {
             if (!window.currentUser || (window.currentUser.role !== 'ADMIN_MAIN' && window.currentUser.role !== 'DEVELOPER')) return;
 
@@ -942,7 +914,7 @@
             const monthInput = document.getElementById('payrollMonth');
             if (!tbody || !monthInput) return;
 
-            const selectedMonth = monthInput.value; // YYYY-MM
+            const selectedMonth = monthInput.value;
 
             let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
 
@@ -983,7 +955,6 @@
             document.getElementById('totalPayout').innerText = `Rs. ${totPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
         }
 
-        // --- STAFF MANAGEMENT ---
         window.handleAddStaff = async function(e) {
             e.preventDefault();
             const name = document.getElementById('staffName').value.trim();
@@ -1026,7 +997,6 @@
             `).join('');
         }
 
-        // --- TASK MANAGEMENT ---
         window.toggleCommInput = function() {
             const type = document.getElementById('taskCommType').value;
             const label = document.getElementById('commValueLabel');
@@ -1077,7 +1047,6 @@
             `).join('');
         }
 
-        // --- DEVELOPER ACCESS & CONTROL PANEL ---
         function renderDevUsersList() {
             const listEl = document.getElementById('devUsersList');
             if (!listEl) return;
@@ -1120,7 +1089,6 @@
             }
         }
 
-        // --- SECURITY MODAL & USER PASSWORD UPDATE ---
         window.openSecurityModal = function() {
             document.getElementById('secCurrentUsername').value = window.currentUser.displayName + ` (${window.currentUser.username})`;
             document.getElementById('secError').classList.add('hidden');
@@ -1162,7 +1130,7 @@
             } catch (err) {
                 console.error("Error updating password:", err);
                 errEl.innerText = "Failed to update password.";
-                errEl.classList.remove('hidden');
+                errEl.classList.add('hidden');
             }
         }
     </script>
