@@ -257,7 +257,7 @@
                                 <label class="text-xs font-bold text-slate-600 uppercase">Month:</label>
                                 <input type="month" id="payrollMonth" onchange="renderPayrollTable()" class="bg-transparent focus:outline-none font-bold text-slate-800 text-sm">
                             </div>
-                            <button onclick="exportAllMonthsDetailedCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition-all duration-200 flex items-center space-x-2 text-sm transform active:scale-95">
+                            <button onclick="exportSelectedMonthReport()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition-all duration-200 flex items-center space-x-2 text-sm transform active:scale-95">
                                 <i class="fa-solid fa-file-excel"></i>
                                 <span>Export Selected Month Report (CSV)</span>
                             </button>
@@ -837,10 +837,11 @@
             if (historyFilter && currentFilterVal) historyFilter.value = currentFilterVal;
         }
 
-        window.exportAllMonthsDetailedCSV = function() {
+        // --- EXPORT STRICTLY SELECTED MONTH REPORT ---
+        window.exportSelectedMonthReport = function() {
             let csvContent = "data:text/csv;charset=utf-8,";
             
-            // Get the exact month selected from the payroll tab's month picker input
+            // Get the exact month selected from the payroll month picker
             const selectedMonthInput = document.getElementById('payrollMonth');
             const targetMonth = selectedMonthInput ? selectedMonthInput.value : new Date().toISOString().slice(0, 7);
 
@@ -848,7 +849,7 @@
             csvContent += `"MONTH: ${targetMonth}"\n`;
             csvContent += `"========================================"\n\n`;
 
-            // 1. Payroll Summary for the selected month
+            // 1. Payroll Summary for the selected month only
             csvContent += `"--- MONTHLY PAYROLL SUMMARY ---"\n`;
             csvContent += "Staff Name,Base Salary (LKR),Tasks Completed,Total Sales Volume (LKR),Total Commission (LKR),Total Payout (LKR)\n";
 
@@ -872,7 +873,7 @@
 
             csvContent += `TOTALS,${totBase},${totTasks},${totSales},${totComm},${totPayout}\n\n`;
 
-            // 2. Task Logs for the selected month
+            // 2. Task Execution Logs for the selected month only
             csvContent += `"--- TASK EXECUTION LOGS ---"\n`;
             csvContent += "Date & Time,Staff Member,Task Completed,Sale Amount (LKR),Commission Earned (LKR),Logged By\n";
 
