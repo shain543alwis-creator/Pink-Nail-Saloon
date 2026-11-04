@@ -53,7 +53,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                             <i class="fa-solid fa-user"></i>
                         </span>
-                        <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink focus:border-transparent transition-all" placeholder="Enter username (admin or admin2)">
+                        <input type="text" id="loginUsername" required class="w-full pl-10 pr-4 py-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink focus:border-transparent transition-all" placeholder="admin, admin2, or developer">
                     </div>
                 </div>
 
@@ -76,10 +76,11 @@
                     <i class="fa-solid fa-arrow-right text-sm"></i>
                 </button>
 
-                <div class="mt-6 pt-6 border-t border-slate-100 text-xs text-slate-400">
+                <div class="mt-6 pt-6 border-t border-slate-100 text-xs text-slate-400 space-y-1">
                     <p class="font-semibold text-slate-500 mb-1">Default Demo Credentials:</p>
                     <p>• <b>Main Admin:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin123</code></p>
-                    <p class="mt-0.5">• <b>Admin 2:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin2</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">staff123</code></p>
+                    <p>• <b>Admin 2:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">admin2</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">staff123</code></p>
+                    <p>• <b>Developer:</b> <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">developer</code> / <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-700">dev123</code></p>
                 </div>
             </form>
         </div>
@@ -117,25 +118,29 @@
         <!-- DASHBOARD NAVIGATION TABS -->
         <nav class="bg-white border-b border-slate-200 shadow-sm">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto">
-                <button onclick="switchTab('logTask')" id="tab-logTask" class="py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-brandPink text-brandPink">
+                <button onclick="switchTab('logTask')" id="tab-logTask" class="py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-brandPink text-brandPink whitespace-nowrap">
                     <i class="fa-solid fa-square-plus"></i>
                     <span>Log Completed Task</span>
                 </button>
-                <button onclick="switchTab('history')" id="tab-history" class="py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                <button onclick="switchTab('history')" id="tab-history" class="py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
                     <i class="fa-solid fa-clock-rotate-left"></i>
                     <span>Task Logs & History</span>
                 </button>
-                <button onclick="switchTab('payroll')" id="tab-payroll" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                <button onclick="switchTab('payroll')" id="tab-payroll" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
                     <i class="fa-solid fa-calculator"></i>
                     <span>Monthly Payroll</span>
                 </button>
-                <button onclick="switchTab('staff')" id="tab-staff" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                <button onclick="switchTab('staff')" id="tab-staff" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
                     <i class="fa-solid fa-users"></i>
                     <span>Manage Staff</span>
                 </button>
-                <button onclick="switchTab('tasks')" id="tab-tasks" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700">
+                <button onclick="switchTab('tasks')" id="tab-tasks" class="admin-only py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-slate-500 hover:text-slate-700 whitespace-nowrap">
                     <i class="fa-solid fa-list-check"></i>
                     <span>Manage Tasks</span>
+                </button>
+                <button onclick="switchTab('devControl')" id="tab-devControl" class="dev-only hidden py-4 px-1 border-b-2 font-semibold text-sm flex items-center space-x-2 border-transparent text-purple-600 hover:text-purple-800 whitespace-nowrap">
+                    <i class="fa-solid fa-code text-purple-600"></i>
+                    <span class="font-bold">Developer Access & Password Reset</span>
                 </button>
             </div>
         </nav>
@@ -231,7 +236,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 3: MONTHLY PAYROLL (MAIN ADMIN ONLY) -->
+            <!-- VIEW 3: MONTHLY PAYROLL (MAIN ADMIN & DEVELOPER ONLY) -->
             <section id="view-payroll" class="tab-view space-y-6 hidden admin-only">
                 <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100">
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -239,9 +244,16 @@
                             <h2 class="text-xl font-bold text-slate-900">Monthly Earnings & Payroll</h2>
                             <p class="text-slate-500 text-sm">Base salary + earned task commissions</p>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <label class="text-sm font-semibold text-slate-600">Select Month:</label>
-                            <input type="month" id="payrollMonth" onchange="renderPayrollTable()" class="py-2 px-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink font-semibold">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <div class="flex items-center space-x-2">
+                                <label class="text-sm font-semibold text-slate-600">Select Month:</label>
+                                <input type="month" id="payrollMonth" onchange="renderPayrollTable()" class="py-2 px-3 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brandPink font-semibold">
+                            </div>
+                            <!-- EXPORT EXCEL/CSV BUTTON -->
+                            <button onclick="exportPayrollToCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-lg shadow-sm transition-all flex items-center space-x-2 text-sm">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Export Payroll to CSV</span>
+                            </button>
                         </div>
                     </div>
 
@@ -274,7 +286,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 4: MANAGE STAFF (MAIN ADMIN ONLY) -->
+            <!-- VIEW 4: MANAGE STAFF (MAIN ADMIN & DEVELOPER ONLY) -->
             <section id="view-staff" class="tab-view space-y-6 hidden admin-only">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit">
@@ -316,7 +328,7 @@
                 </div>
             </section>
 
-            <!-- VIEW 5: MANAGE TASKS & COMMISSIONS (MAIN ADMIN ONLY) -->
+            <!-- VIEW 5: MANAGE TASKS & COMMISSIONS (MAIN ADMIN & DEVELOPER ONLY) -->
             <section id="view-tasks" class="tab-view space-y-6 hidden admin-only">
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     <div class="bg-white rounded-2xl p-6 card-shadow border border-slate-100 h-fit">
@@ -361,6 +373,64 @@
                                 <tbody id="taskTableBody" class="divide-y divide-slate-100">
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 6: DEVELOPER CONTROL PANEL (DEVELOPER ROLE ONLY) -->
+            <section id="view-devControl" class="tab-view space-y-6 hidden dev-only">
+                <div class="bg-white rounded-2xl p-6 card-shadow border border-purple-100">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-purple-950 flex items-center space-x-2">
+                                <i class="fa-solid fa-user-gear text-purple-600"></i>
+                                <span>Master Developer Control Panel</span>
+                            </h2>
+                            <p class="text-slate-500 text-sm mt-0.5">Manage system accounts, reset user credentials, and oversee permissions.</p>
+                        </div>
+                        <span class="bg-purple-100 text-purple-800 text-xs font-extrabold px-3 py-1 rounded-full uppercase border border-purple-200">
+                            Super Access
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Password Reset Tool -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-key text-purple-600"></i>
+                                <span>Force Reset User Password</span>
+                            </h3>
+
+                            <form onsubmit="handleDevResetPassword(event)" class="space-y-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Select User Account</label>
+                                    <select id="devTargetUser" required class="w-full py-2.5 px-3.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-600 font-semibold">
+                                        <option value="admin">Main Admin (admin)</option>
+                                        <option value="admin2">Admin 2 - Operational (admin2)</option>
+                                        <option value="developer">Developer (developer)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Set New Password</label>
+                                    <input type="password" id="devNewPassword" required minlength="6" class="w-full py-2.5 px-3.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-purple-600" placeholder="Min 6 characters">
+                                </div>
+                                <button type="submit" class="w-full bg-purple-700 hover:bg-purple-800 text-white font-bold py-2.5 rounded-lg shadow-md transition-all">
+                                    Overwrite & Reset Password
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- System Accounts Overview -->
+                        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                            <h3 class="font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                                <i class="fa-solid fa-users-gear text-purple-600"></i>
+                                <span>Active System Accounts</span>
+                            </h3>
+
+                            <div class="space-y-3" id="devUsersList">
+                                <!-- Populated dynamically -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -471,14 +541,23 @@
 
         async function initializeRealtimeDatabase() {
             try {
-                // 1. Seed Users if absent
+                // 1. Seed Users (Admin, Admin2, Developer) if absent
                 const usersRef = ref(db, 'users');
                 const usersSnap = await get(usersRef);
-                if (!usersSnap.exists() || !usersSnap.val().admin) {
-                    const adminHash = await hashPassword('admin123', GLOBAL_SALT);
-                    const staffHash = await hashPassword('staff123', GLOBAL_SALT);
+                const currentUsers = usersSnap.val() || {};
+
+                const adminHash = await hashPassword('admin123', GLOBAL_SALT);
+                const staffHash = await hashPassword('staff123', GLOBAL_SALT);
+                const devHash = await hashPassword('dev123', GLOBAL_SALT);
+
+                if (!currentUsers.admin) {
                     await set(ref(db, 'users/admin'), { role: 'ADMIN_MAIN', displayName: 'Main Admin', passwordHash: adminHash });
+                }
+                if (!currentUsers.admin2) {
                     await set(ref(db, 'users/admin2'), { role: 'ADMIN_OPERATIONAL', displayName: 'Admin 2 (Operational)', passwordHash: staffHash });
+                }
+                if (!currentUsers.developer) {
+                    await set(ref(db, 'users/developer'), { role: 'DEVELOPER', displayName: 'System Developer', passwordHash: devHash });
                 }
 
                 // 2. Seed Default Staff if absent
@@ -519,28 +598,25 @@
             }
         }
 
-        // --- REALTIME LISTENERS (Live automatic UI syncing) ---
+        // --- REALTIME LISTENERS ---
         function setupRealtimeListeners() {
-            // Listen to Users
             onValue(ref(db, 'users'), (snapshot) => {
                 window.usersData = snapshot.val() || {};
+                renderDevUsersList();
             });
 
-            // Listen to Staff
             onValue(ref(db, 'staff'), (snapshot) => {
                 const data = snapshot.val() || {};
                 window.staffList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
                 renderActiveView();
             });
 
-            // Listen to Tasks
             onValue(ref(db, 'tasks'), (snapshot) => {
                 const data = snapshot.val() || {};
                 window.taskList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
                 renderActiveView();
             });
 
-            // Listen to Logs
             onValue(ref(db, 'logs'), (snapshot) => {
                 const data = snapshot.val() || {};
                 window.logList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
@@ -606,10 +682,18 @@
             badge.innerText = window.currentUser.displayName;
 
             const adminElements = document.querySelectorAll('.admin-only');
-            if (window.currentUser.role === 'ADMIN_MAIN') {
+            const devElements = document.querySelectorAll('.dev-only');
+
+            if (window.currentUser.role === 'ADMIN_MAIN' || window.currentUser.role === 'DEVELOPER') {
                 adminElements.forEach(el => el.classList.remove('hidden'));
             } else {
                 adminElements.forEach(el => el.classList.add('hidden'));
+            }
+
+            if (window.currentUser.role === 'DEVELOPER') {
+                devElements.forEach(el => el.classList.remove('hidden'));
+            } else {
+                devElements.forEach(el => el.classList.add('hidden'));
             }
         }
 
@@ -633,7 +717,7 @@
             renderActiveView();
         }
 
-        // --- RENDER CURRENTLY ACTIVE VIEW ---
+        // --- RENDER ACTIVE VIEW ---
         function renderActiveView() {
             if (!window.currentUser) return;
 
@@ -643,7 +727,7 @@
             if (!document.getElementById('view-history').classList.contains('hidden')) {
                 renderHistoryTable();
             }
-            if (!document.getElementById('view-payroll').classList.contains('hidden') && window.currentUser.role === 'ADMIN_MAIN') {
+            if (!document.getElementById('view-payroll').classList.contains('hidden') && (window.currentUser.role === 'ADMIN_MAIN' || window.currentUser.role === 'DEVELOPER')) {
                 renderPayrollTable();
             }
             if (!document.getElementById('view-staff').classList.contains('hidden')) {
@@ -651,6 +735,9 @@
             }
             if (!document.getElementById('view-tasks').classList.contains('hidden')) {
                 renderTaskTable();
+            }
+            if (!document.getElementById('view-devControl').classList.contains('hidden') && window.currentUser.role === 'DEVELOPER') {
+                renderDevUsersList();
             }
         }
 
@@ -682,6 +769,44 @@
             if (currentStaffVal) staffSelect.value = currentStaffVal;
             if (currentTaskVal) taskSelect.value = currentTaskVal;
             if (historyFilter && currentFilterVal) historyFilter.value = currentFilterVal;
+        }
+
+        // --- EXPORT TO EXCEL / CSV ---
+        window.exportPayrollToCSV = function() {
+            const selectedMonth = document.getElementById('payrollMonth').value || new Date().toISOString().slice(0, 7);
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // CSV Header Row
+            csvContent += "Staff Name,Base Salary (LKR),Tasks Completed,Total Sales Volume (LKR),Total Commission (LKR),Total Payout (LKR)\n";
+
+            let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
+
+            window.staffList.forEach(staff => {
+                const staffLogs = window.logList.filter(log => log.staffId === staff.id && log.dateTime.startsWith(selectedMonth));
+                const tasksDone = staffLogs.length;
+                const salesVol = staffLogs.reduce((acc, curr) => acc + curr.saleAmount, 0);
+                const commEarned = staffLogs.reduce((acc, curr) => acc + curr.commissionAmount, 0);
+                const totalPayout = staff.baseSalary + commEarned;
+
+                totBase += staff.baseSalary;
+                totTasks += tasksDone;
+                totSales += salesVol;
+                totComm += commEarned;
+                totPayout += totalPayout;
+
+                csvContent += `"${staff.name.replace(/"/g, '""')}",${staff.baseSalary},${tasksDone},${salesVol},${commEarned},${totalPayout}\n`;
+            });
+
+            // CSV Summary Row
+            csvContent += `TOTALS,${totBase},${totTasks},${totSales},${totComm},${totPayout}\n`;
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `Pink_Nail_Salon_Payroll_${selectedMonth}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // --- TASK LOGGING & COMMISSIONS ---
@@ -742,261 +867,4 @@
             };
 
             try {
-                const logsRef = ref(db, 'logs');
-                const newLogRef = push(logsRef);
-                await set(newLogRef, newLog);
-
-                document.getElementById('recordTaskForm').reset();
-                document.getElementById('logPreviewCard').classList.add('hidden');
-                setDefaultDateTime();
-                alert('Task completion recorded successfully!');
-                switchTab('history');
-            } catch (err) {
-                console.error("Error saving log:", err);
-                alert("Failed to save task log.");
-            }
-        }
-
-        // --- HISTORY TABLE ---
-        window.renderHistoryTable = function() {
-            const tbody = document.getElementById('historyTableBody');
-            const filterStaffEl = document.getElementById('historyStaffFilter');
-            const searchEl = document.getElementById('historySearch');
-
-            if (!tbody) return;
-
-            const filterStaff = filterStaffEl ? filterStaffEl.value : 'ALL';
-            const search = searchEl ? searchEl.value.toLowerCase() : '';
-
-            let filtered = window.logList.filter(log => {
-                const matchesStaff = filterStaff === 'ALL' || log.staffId === filterStaff;
-                const matchesSearch = log.staffName.toLowerCase().includes(search) || log.taskName.toLowerCase().includes(search);
-                return matchesStaff && matchesSearch;
-            });
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No task execution logs found.</td></tr>`;
-                return;
-            }
-
-            tbody.innerHTML = filtered.map(log => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-4 font-mono text-xs text-slate-600">${new Date(log.dateTime).toLocaleString()}</td>
-                    <td class="py-3 px-4 font-semibold text-slate-900">${log.staffName}</td>
-                    <td class="py-3 px-4 text-slate-700">${log.taskName}</td>
-                    <td class="py-3 px-4 font-medium">Rs. ${log.saleAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                    <td class="py-3 px-4 text-brandPink font-bold">Rs. ${log.commissionAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                    <td class="py-3 px-4 text-xs text-slate-500">${log.loggedBy}</td>
-                    <td class="py-3 px-4 text-right admin-only">
-                        <button onclick="deleteLog('${log.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-
-            applyUserPermissions();
-        }
-
-        window.deleteLog = async function(logId) {
-            if (window.currentUser.role !== 'ADMIN_MAIN') return;
-            if (confirm('Are you sure you want to delete this log entry?')) {
-                try {
-                    await remove(ref(db, `logs/${logId}`));
-                } catch (err) {
-                    console.error("Error deleting log:", err);
-                }
-            }
-        }
-
-        // --- PAYROLL TABLE (MAIN ADMIN ONLY) ---
-        window.renderPayrollTable = function() {
-            if (!window.currentUser || window.currentUser.role !== 'ADMIN_MAIN') return;
-
-            const tbody = document.getElementById('payrollTableBody');
-            const monthInput = document.getElementById('payrollMonth');
-            if (!tbody || !monthInput) return;
-
-            const selectedMonth = monthInput.value; // YYYY-MM
-
-            let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
-
-            const rows = window.staffList.map(staff => {
-                const staffLogs = window.logList.filter(log => {
-                    return log.staffId === staff.id && log.dateTime.startsWith(selectedMonth);
-                });
-
-                const tasksDone = staffLogs.length;
-                const salesVol = staffLogs.reduce((acc, curr) => acc + curr.saleAmount, 0);
-                const commEarned = staffLogs.reduce((acc, curr) => acc + curr.commissionAmount, 0);
-                const totalPayout = staff.baseSalary + commEarned;
-
-                totBase += staff.baseSalary;
-                totTasks += tasksDone;
-                totSales += salesVol;
-                totComm += commEarned;
-                totPayout += totalPayout;
-
-                return `
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="py-3 px-4 font-bold text-slate-900">${staff.name}</td>
-                        <td class="py-3 px-4 text-slate-700">Rs. ${staff.baseSalary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                        <td class="py-3 px-4 text-slate-700">${tasksDone}</td>
-                        <td class="py-3 px-4 text-slate-700">Rs. ${salesVol.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                        <td class="py-3 px-4 font-semibold text-slate-900">Rs. ${commEarned.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                        <td class="py-3 px-4 text-brandPink font-black text-base">Rs. ${totalPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                    </tr>
-                `;
-            }).join('');
-
-            tbody.innerHTML = rows || `<tr><td colspan="6" class="py-8 text-center text-slate-400">No staff records.</td></tr>`;
-
-            document.getElementById('totalBaseSalary').innerText = `Rs. ${totBase.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            document.getElementById('totalTasksCompleted').innerText = totTasks;
-            document.getElementById('totalSalesVolume').innerText = `Rs. ${totSales.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            document.getElementById('totalCommissions').innerText = `Rs. ${totComm.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-            document.getElementById('totalPayout').innerText = `Rs. ${totPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
-        }
-
-        // --- STAFF MANAGEMENT ---
-        window.handleAddStaff = async function(e) {
-            e.preventDefault();
-            const name = document.getElementById('staffName').value.trim();
-            const baseSalary = parseFloat(document.getElementById('staffBaseSalary').value);
-
-            try {
-                const staffRef = ref(db, 'staff');
-                const newRef = push(staffRef);
-                await set(newRef, { name, baseSalary });
-                document.getElementById('addStaffForm').reset();
-                alert('Staff member added successfully!');
-            } catch (err) {
-                console.error("Error adding staff:", err);
-            }
-        }
-
-        window.deleteStaff = async function(staffId) {
-            if (confirm('Delete this staff member?')) {
-                try {
-                    await remove(ref(db, `staff/${staffId}`));
-                } catch (err) {
-                    console.error("Error deleting staff:", err);
-                }
-            }
-        }
-
-        function renderStaffTable() {
-            const tbody = document.getElementById('staffTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = window.staffList.map(s => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>
-                    <td class="py-3 px-4 text-slate-700">Rs. ${s.baseSalary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                    <td class="py-3 px-4 text-right">
-                        <button onclick="deleteStaff('${s.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
-                            <i class="fa-solid fa-trash-can"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // --- TASK MANAGEMENT ---
-        window.toggleCommInput = function() {
-            const type = document.getElementById('taskCommType').value;
-            const label = document.getElementById('commValueLabel');
-            label.innerText = type === 'PERCENTAGE' ? 'Commission Percentage (%) *' : 'Fixed Commission Amount (Rs.) *';
-        }
-
-        window.handleAddTask = async function(e) {
-            e.preventDefault();
-            const name = document.getElementById('taskName').value.trim();
-            const type = document.getElementById('taskCommType').value;
-            const rate = parseFloat(document.getElementById('taskCommValue').value);
-
-            try {
-                const taskRef = ref(db, 'tasks');
-                const newRef = push(taskRef);
-                await set(newRef, { name, type, rate });
-                document.getElementById('addTaskForm').reset();
-                alert('Task created successfully!');
-            } catch (err) {
-                console.error("Error adding task:", err);
-            }
-        }
-
-        window.deleteTask = async function(taskId) {
-            if (confirm('Delete this task category?')) {
-                try {
-                    await remove(ref(db, `tasks/${taskId}`));
-                } catch (err) {
-                    console.error("Error deleting task:", err);
-                }
-            }
-        }
-
-        function renderTaskTable() {
-            const tbody = document.getElementById('taskTableBody');
-            if (!tbody) return;
-            tbody.innerHTML = window.taskList.map(t => `
-                <tr class="hover:bg-slate-50 transition-colors">
-                    <td class="py-3 px-4 font-semibold text-slate-900">${t.name}</td>
-                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded">${t.type}</span></td>
-                    <td class="py-3 px-4 font-bold text-slate-800">${t.type === 'PERCENTAGE' ? t.rate + '%' : 'Rs. ' + t.rate.toLocaleString()}</td>
-                    <td class="py-3 px-4 text-right">
-                        <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
-                            <i class="fa-solid fa-trash-can"></i> Delete
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        // --- SECURITY MODAL & PASSWORD UPDATE ---
-        window.openSecurityModal = function() {
-            document.getElementById('secCurrentUsername').value = window.currentUser.displayName + ` (${window.currentUser.username})`;
-            document.getElementById('secError').classList.add('hidden');
-            document.getElementById('secSuccess').classList.add('hidden');
-            document.getElementById('changePasswordForm').reset();
-            document.getElementById('securityModal').classList.remove('hidden');
-        }
-
-        window.closeSecurityModal = function() {
-            document.getElementById('securityModal').classList.add('hidden');
-        }
-
-        window.handleChangePassword = async function(e) {
-            e.preventDefault();
-            const newPass = document.getElementById('secNewPassword').value;
-            const confirmPass = document.getElementById('secConfirmPassword').value;
-            const errEl = document.getElementById('secError');
-            const succEl = document.getElementById('secSuccess');
-
-            errEl.classList.add('hidden');
-            succEl.classList.add('hidden');
-
-            if (newPass !== confirmPass) {
-                errEl.innerText = "New passwords do not match!";
-                errEl.classList.remove('hidden');
-                return;
-            }
-
-            try {
-                const newHash = await hashPassword(newPass, GLOBAL_SALT);
-                await update(ref(db, `users/${window.currentUser.username}`), {
-                    passwordHash: newHash
-                });
-
-                succEl.classList.remove('hidden');
-                setTimeout(() => {
-                    closeSecurityModal();
-                }, 1500);
-            } catch (err) {
-                console.error("Error updating password:", err);
-                errEl.innerText = "Failed to update password.";
-                errEl.classList.remove('hidden');
-            }
-        }
-    </script>
-</body>
-</html>
+                const logsRef
