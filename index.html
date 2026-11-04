@@ -259,7 +259,7 @@
                             </div>
                             <button onclick="exportAllMonthsDetailedCSV()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition-all duration-200 flex items-center space-x-2 text-sm transform active:scale-95">
                                 <i class="fa-solid fa-file-excel"></i>
-                                <span>Export All Months Report (CSV)</span>
+                                <span>Export Selected Month Report (CSV)</span>
                             </button>
                         </div>
                     </div>
@@ -840,63 +840,52 @@
         window.exportAllMonthsDetailedCSV = function() {
             let csvContent = "data:text/csv;charset=utf-8,";
             
-            const monthsSet = new Set();
-            window.logList.forEach(log => {
-                if (log.dateTime && log.dateTime.length >= 7) {
-                    monthsSet.add(log.dateTime.slice(0, 7));
-                }
+            // Get the exact month selected from the payroll tab's month picker input
+            const selectedMonthInput = document.getElementById('payrollMonth');
+            const targetMonth = selectedMonthInput ? selectedMonthInput.value : new Date().toISOString().slice(0, 7);
+
+            csvContent += `"========================================"\n`;
+            csvContent += `"MONTH: ${targetMonth}"\n`;
+            csvContent += `"========================================"\n\n`;
+
+            // 1. Payroll Summary for the selected month
+            csvContent += `"--- MONTHLY PAYROLL SUMMARY ---"\n`;
+            csvContent += "Staff Name,Base Salary (LKR),Tasks Completed,Total Sales Volume (LKR),Total Commission (LKR),Total Payout (LKR)\n";
+
+            let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
+
+            window.staffList.forEach(staff => {
+                const staffLogs = window.logList.filter(log => log.staffId === staff.id && log.dateTime && log.dateTime.startsWith(targetMonth));
+                const tasksDone = staffLogs.length;
+                const salesVol = staffLogs.reduce((acc, curr) => acc + curr.saleAmount, 0);
+                const commEarned = staffLogs.reduce((acc, curr) => acc + curr.commissionAmount, 0);
+                const totalPayout = staff.baseSalary + commEarned;
+
+                totBase += staff.baseSalary;
+                totTasks += tasksDone;
+                totSales += salesVol;
+                totComm += commEarned;
+                totPayout += totalPayout;
+
+                csvContent += `"${staff.name.replace(/"/g, '""')}",${staff.baseSalary},${tasksDone},${salesVol},${commEarned},${totalPayout}\n`;
             });
 
-            if (monthsSet.size === 0) {
-                monthsSet.add(new Date().toISOString().slice(0, 7));
-            }
+            csvContent += `TOTALS,${totBase},${totTasks},${totSales},${totComm},${totPayout}\n\n`;
 
-            const sortedMonths = Array.from(monthsSet).sort();
+            // 2. Task Logs for the selected month
+            csvContent += `"--- TASK EXECUTION LOGS ---"\n`;
+            csvContent += "Date & Time,Staff Member,Task Completed,Sale Amount (LKR),Commission Earned (LKR),Logged By\n";
 
-            sortedMonths.forEach(month => {
-                csvContent += `"========================================"\n`;
-                csvContent += `"MONTH: ${month}"\n`;
-                csvContent += `"========================================"\n\n`;
-
-                csvContent += `"--- MONTHLY PAYROLL SUMMARY ---"\n`;
-                csvContent += "Staff Name,Base Salary (LKR),Tasks Completed,Total Sales Volume (LKR),Total Commission (LKR),Total Payout (LKR)\n";
-
-                let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
-
-                window.staffList.forEach(staff => {
-                    const staffLogs = window.logList.filter(log => log.staffId === staff.id && log.dateTime.startsWith(month));
-                    const tasksDone = staffLogs.length;
-                    const salesVol = staffLogs.reduce((acc, curr) => acc + curr.saleAmount, 0);
-                    const commEarned = staffLogs.reduce((acc, curr) => acc + curr.commissionAmount, 0);
-                    const totalPayout = staff.baseSalary + commEarned;
-
-                    totBase += staff.baseSalary;
-                    totTasks += tasksDone;
-                    totSales += salesVol;
-                    totComm += commEarned;
-                    totPayout += totalPayout;
-
-                    csvContent += `"${staff.name.replace(/"/g, '""')}",${staff.baseSalary},${tasksDone},${salesVol},${commEarned},${totalPayout}\n`;
-                });
-
-                csvContent += `TOTALS,${totBase},${totTasks},${totSales},${totComm},${totPayout}\n\n`;
-
-                csvContent += `"--- TASK EXECUTION LOGS ---"\n`;
-                csvContent += "Date & Time,Staff Member,Task Completed,Sale Amount (LKR),Commission Earned (LKR),Logged By\n";
-
-                const monthLogs = window.logList.filter(log => log.dateTime.startsWith(month));
-                monthLogs.forEach(log => {
-                    const formattedDate = new Date(log.dateTime).toLocaleString().replace(/,/g, '');
-                    csvContent += `"${formattedDate}","${log.staffName.replace(/"/g, '""')}","${log.taskName.replace(/"/g, '""')}",${log.saleAmount},${log.commissionAmount},"${log.loggedBy}"\n`;
-                });
-
-                csvContent += `\n\n`;
+            const monthLogs = window.logList.filter(log => log.dateTime && log.dateTime.startsWith(targetMonth));
+            monthLogs.forEach(log => {
+                const formattedDate = new Date(log.dateTime).toLocaleString().replace(/,/g, '');
+                csvContent += `"${formattedDate}","${log.staffName.replace(/"/g, '""')}","${log.taskName.replace(/"/g, '""')}",${log.saleAmount},${log.commissionAmount},"${log.loggedBy}"\n`;
             });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Pink_Nail_Salon_All_Months_Report.csv`);
+            link.setAttribute("download", `Pink_Nail_Salon_Report_${targetMonth}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1038,7 +1027,7 @@
 
             const rows = window.staffList.map(staff => {
                 const staffLogs = window.logList.filter(log => {
-                    return log.staffId === staff.id && log.dateTime.startsWith(selectedMonth);
+                    return log.staffId === staff.id && log.dateTime && log.dateTime.startsWith(selectedMonth);
                 });
 
                 const tasksDone = staffLogs.length;
@@ -1059,7 +1048,7 @@
                         <td class="py-3.5 px-4 text-slate-700 font-semibold">${tasksDone}</td>
                         <td class="py-3.5 px-4 text-slate-700">Rs. ${salesVol.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                         <td class="py-3.5 px-4 font-bold text-slate-900">Rs. ${commEarned.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
-                        <td class="py-3 px-4 text-brandPink font-black text-base">Rs. ${totalPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="py-3.5 px-4 text-brandPink font-black text-base">Rs. ${totalPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
                     </tr>
                 `;
             }).join('');
