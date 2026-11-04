@@ -530,14 +530,14 @@
             onValue(ref(db, 'staff'), (snapshot) => {
                 const data = snapshot.val() || {};
                 window.staffList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                renderAll();
+                renderActiveView();
             });
 
             // Listen to Tasks
             onValue(ref(db, 'tasks'), (snapshot) => {
                 const data = snapshot.val() || {};
                 window.taskList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-                renderAll();
+                renderActiveView();
             });
 
             // Listen to Logs
@@ -545,7 +545,7 @@
                 const data = snapshot.val() || {};
                 window.logList = Object.keys(data).map(key => ({ id: key, ...data[key] }));
                 window.logList.sort((a, b) => new Date(b.dateTime) - new Date(a.dateTime));
-                renderAll();
+                renderActiveView();
             });
         }
 
@@ -575,7 +575,7 @@
                     applyUserPermissions();
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('appScreen').classList.remove('hidden');
-                    renderAll();
+                    switchTab('logTask');
                     return;
                 }
             }
@@ -589,7 +589,7 @@
                 applyUserPermissions();
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('appScreen').classList.remove('hidden');
-                renderAll();
+                switchTab('logTask');
             }
         }
 
@@ -610,11 +610,6 @@
                 adminElements.forEach(el => el.classList.remove('hidden'));
             } else {
                 adminElements.forEach(el => el.classList.add('hidden'));
-                if (!document.getElementById('view-payroll').classList.contains('hidden') ||
-                    !document.getElementById('view-staff').classList.contains('hidden') ||
-                    !document.getElementById('view-tasks').classList.contains('hidden')) {
-                    window.switchTab('logTask');
-                }
             }
         }
 
@@ -626,25 +621,37 @@
                 btn.classList.add('border-transparent', 'text-slate-500');
             });
 
-            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            const targetView = document.getElementById(`view-${tabId}`);
+            if (targetView) targetView.classList.remove('hidden');
+
             const activeBtn = document.getElementById(`tab-${tabId}`);
             if (activeBtn) {
                 activeBtn.classList.remove('border-transparent', 'text-slate-500');
                 activeBtn.classList.add('border-brandPink', 'text-brandPink');
             }
 
-            renderAll();
+            renderActiveView();
         }
 
-        // --- RENDER ENGINE ---
-        function renderAll() {
-            populateSelects();
-            renderHistoryTable();
-            if (window.currentUser && window.currentUser.role === 'ADMIN_MAIN') {
+        // --- RENDER CURRENTLY ACTIVE VIEW ---
+        function renderActiveView() {
+            if (!window.currentUser) return;
+
+            if (!document.getElementById('view-logTask').classList.contains('hidden')) {
+                populateSelects();
+            }
+            if (!document.getElementById('view-history').classList.contains('hidden')) {
+                renderHistoryTable();
+            }
+            if (!document.getElementById('view-payroll').classList.contains('hidden') && window.currentUser.role === 'ADMIN_MAIN') {
                 renderPayrollTable();
             }
-            renderStaffTable();
-            renderTaskTable();
+            if (!document.getElementById('view-staff').classList.contains('hidden')) {
+                renderStaffTable();
+            }
+            if (!document.getElementById('view-tasks').classList.contains('hidden')) {
+                renderTaskTable();
+            }
         }
 
         function populateSelects() {
@@ -656,14 +663,14 @@
 
             const currentStaffVal = staffSelect.value;
             const currentTaskVal = taskSelect.value;
-            const currentFilterVal = historyFilter.value;
+            const currentFilterVal = historyFilter ? historyFilter.value : 'ALL';
 
             staffSelect.innerHTML = '<option value="">-- Choose Staff Member --</option>';
-            historyFilter.innerHTML = '<option value="ALL">All Staff Members</option>';
+            if (historyFilter) historyFilter.innerHTML = '<option value="ALL">All Staff Members</option>';
 
             window.staffList.forEach(staff => {
                 staffSelect.innerHTML += `<option value="${staff.id}">${staff.name}</option>`;
-                historyFilter.innerHTML += `<option value="${staff.id}">${staff.name}</option>`;
+                if (historyFilter) historyFilter.innerHTML += `<option value="${staff.id}">${staff.name}</option>`;
             });
 
             taskSelect.innerHTML = '<option value="">-- Choose Completed Task --</option>';
@@ -674,7 +681,7 @@
 
             if (currentStaffVal) staffSelect.value = currentStaffVal;
             if (currentTaskVal) taskSelect.value = currentTaskVal;
-            if (currentFilterVal) historyFilter.value = currentFilterVal;
+            if (historyFilter && currentFilterVal) historyFilter.value = currentFilterVal;
         }
 
         // --- TASK LOGGING & COMMISSIONS ---
@@ -743,7 +750,7 @@
                 document.getElementById('logPreviewCard').classList.add('hidden');
                 setDefaultDateTime();
                 alert('Task completion recorded successfully!');
-                window.switchTab('history');
+                switchTab('history');
             } catch (err) {
                 console.error("Error saving log:", err);
                 alert("Failed to save task log.");
@@ -753,8 +760,13 @@
         // --- HISTORY TABLE ---
         window.renderHistoryTable = function() {
             const tbody = document.getElementById('historyTableBody');
-            const filterStaff = document.getElementById('historyStaffFilter').value;
-            const search = document.getElementById('historySearch').value.toLowerCase();
+            const filterStaffEl = document.getElementById('historyStaffFilter');
+            const searchEl = document.getElementById('historySearch');
+
+            if (!tbody) return;
+
+            const filterStaff = filterStaffEl ? filterStaffEl.value : 'ALL';
+            const search = searchEl ? searchEl.value.toLowerCase() : '';
 
             let filtered = window.logList.filter(log => {
                 const matchesStaff = filterStaff === 'ALL' || log.staffId === filterStaff;
@@ -802,7 +814,10 @@
             if (!window.currentUser || window.currentUser.role !== 'ADMIN_MAIN') return;
 
             const tbody = document.getElementById('payrollTableBody');
-            const selectedMonth = document.getElementById('payrollMonth').value; // YYYY-MM
+            const monthInput = document.getElementById('payrollMonth');
+            if (!tbody || !monthInput) return;
+
+            const selectedMonth = monthInput.value; // YYYY-MM
 
             let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
 
