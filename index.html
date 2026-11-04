@@ -867,4 +867,304 @@
             };
 
             try {
-                const logsRef
+                const logsRef = ref(db, 'logs');
+                const newLogRef = push(logsRef);
+                await set(newLogRef, newLog);
+
+                document.getElementById('recordTaskForm').reset();
+                document.getElementById('logPreviewCard').classList.add('hidden');
+                setDefaultDateTime();
+                alert('Task completion recorded successfully!');
+                switchTab('history');
+            } catch (err) {
+                console.error("Error saving log:", err);
+                alert("Failed to save task log.");
+            }
+        }
+
+        // --- HISTORY TABLE ---
+        window.renderHistoryTable = function() {
+            const tbody = document.getElementById('historyTableBody');
+            const filterStaffEl = document.getElementById('historyStaffFilter');
+            const searchEl = document.getElementById('historySearch');
+
+            if (!tbody) return;
+
+            const filterStaff = filterStaffEl ? filterStaffEl.value : 'ALL';
+            const search = searchEl ? searchEl.value.toLowerCase() : '';
+
+            let filtered = window.logList.filter(log => {
+                const matchesStaff = filterStaff === 'ALL' || log.staffId === filterStaff;
+                const matchesSearch = log.staffName.toLowerCase().includes(search) || log.taskName.toLowerCase().includes(search);
+                return matchesStaff && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No task execution logs found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(log => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-mono text-xs text-slate-600">${new Date(log.dateTime).toLocaleString()}</td>
+                    <td class="py-3 px-4 font-semibold text-slate-900">${log.staffName}</td>
+                    <td class="py-3 px-4 text-slate-700">${log.taskName}</td>
+                    <td class="py-3 px-4 font-medium">Rs. ${log.saleAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 text-brandPink font-bold">Rs. ${log.commissionAmount.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 text-xs text-slate-500">${log.loggedBy}</td>
+                    <td class="py-3 px-4 text-right admin-only">
+                        <button onclick="deleteLog('${log.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            applyUserPermissions();
+        }
+
+        window.deleteLog = async function(logId) {
+            if (window.currentUser.role !== 'ADMIN_MAIN' && window.currentUser.role !== 'DEVELOPER') return;
+            if (confirm('Are you sure you want to delete this log entry?')) {
+                try {
+                    await remove(ref(db, `logs/${logId}`));
+                } catch (err) {
+                    console.error("Error deleting log:", err);
+                }
+            }
+        }
+
+        // --- PAYROLL TABLE ---
+        window.renderPayrollTable = function() {
+            if (!window.currentUser || (window.currentUser.role !== 'ADMIN_MAIN' && window.currentUser.role !== 'DEVELOPER')) return;
+
+            const tbody = document.getElementById('payrollTableBody');
+            const monthInput = document.getElementById('payrollMonth');
+            if (!tbody || !monthInput) return;
+
+            const selectedMonth = monthInput.value; // YYYY-MM
+
+            let totBase = 0, totTasks = 0, totSales = 0, totComm = 0, totPayout = 0;
+
+            const rows = window.staffList.map(staff => {
+                const staffLogs = window.logList.filter(log => {
+                    return log.staffId === staff.id && log.dateTime.startsWith(selectedMonth);
+                });
+
+                const tasksDone = staffLogs.length;
+                const salesVol = staffLogs.reduce((acc, curr) => acc + curr.saleAmount, 0);
+                const commEarned = staffLogs.reduce((acc, curr) => acc + curr.commissionAmount, 0);
+                const totalPayout = staff.baseSalary + commEarned;
+
+                totBase += staff.baseSalary;
+                totTasks += tasksDone;
+                totSales += salesVol;
+                totComm += commEarned;
+                totPayout += totalPayout;
+
+                return `
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <td class="py-3 px-4 font-bold text-slate-900">${staff.name}</td>
+                        <td class="py-3 px-4 text-slate-700">Rs. ${staff.baseSalary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 text-slate-700">${tasksDone}</td>
+                        <td class="py-3 px-4 text-slate-700">Rs. ${salesVol.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-900">Rs. ${commEarned.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                        <td class="py-3 px-4 text-brandPink font-black text-base">Rs. ${totalPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = rows || `<tr><td colspan="6" class="py-8 text-center text-slate-400">No staff records.</td></tr>`;
+
+            document.getElementById('totalBaseSalary').innerText = `Rs. ${totBase.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('totalTasksCompleted').innerText = totTasks;
+            document.getElementById('totalSalesVolume').innerText = `Rs. ${totSales.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('totalCommissions').innerText = `Rs. ${totComm.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+            document.getElementById('totalPayout').innerText = `Rs. ${totPayout.toLocaleString('en-US', {minimumFractionDigits: 2})}`;
+        }
+
+        // --- STAFF MANAGEMENT ---
+        window.handleAddStaff = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('staffName').value.trim();
+            const baseSalary = parseFloat(document.getElementById('staffBaseSalary').value);
+
+            try {
+                const staffRef = ref(db, 'staff');
+                const newRef = push(staffRef);
+                await set(newRef, { name, baseSalary });
+                document.getElementById('addStaffForm').reset();
+                alert('Staff member added successfully!');
+            } catch (err) {
+                console.error("Error adding staff:", err);
+            }
+        }
+
+        window.deleteStaff = async function(staffId) {
+            if (confirm('Delete this staff member?')) {
+                try {
+                    await remove(ref(db, `staff/${staffId}`));
+                } catch (err) {
+                    console.error("Error deleting staff:", err);
+                }
+            }
+        }
+
+        function renderStaffTable() {
+            const tbody = document.getElementById('staffTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = window.staffList.map(s => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-semibold text-slate-900">${s.name}</td>
+                    <td class="py-3 px-4 text-slate-700">Rs. ${s.baseSalary.toLocaleString('en-US', {minimumFractionDigits: 2})}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteStaff('${s.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
+                            <i class="fa-solid fa-trash-can"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- TASK MANAGEMENT ---
+        window.toggleCommInput = function() {
+            const type = document.getElementById('taskCommType').value;
+            const label = document.getElementById('commValueLabel');
+            label.innerText = type === 'PERCENTAGE' ? 'Commission Percentage (%) *' : 'Fixed Commission Amount (Rs.) *';
+        }
+
+        window.handleAddTask = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('taskName').value.trim();
+            const type = document.getElementById('taskCommType').value;
+            const rate = parseFloat(document.getElementById('taskCommValue').value);
+
+            try {
+                const taskRef = ref(db, 'tasks');
+                const newRef = push(taskRef);
+                await set(newRef, { name, type, rate });
+                document.getElementById('addTaskForm').reset();
+                alert('Task created successfully!');
+            } catch (err) {
+                console.error("Error adding task:", err);
+            }
+        }
+
+        window.deleteTask = async function(taskId) {
+            if (confirm('Delete this task category?')) {
+                try {
+                    await remove(ref(db, `tasks/${taskId}`));
+                } catch (err) {
+                    console.error("Error deleting task:", err);
+                }
+            }
+        }
+
+        function renderTaskTable() {
+            const tbody = document.getElementById('taskTableBody');
+            if (!tbody) return;
+            tbody.innerHTML = window.taskList.map(t => `
+                <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="py-3 px-4 font-semibold text-slate-900">${t.name}</td>
+                    <td class="py-3 px-4"><span class="bg-slate-100 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded">${t.type}</span></td>
+                    <td class="py-3 px-4 font-bold text-slate-800">${t.type === 'PERCENTAGE' ? t.rate + '%' : 'Rs. ' + t.rate.toLocaleString()}</td>
+                    <td class="py-3 px-4 text-right">
+                        <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs font-semibold">
+                            <i class="fa-solid fa-trash-can"></i> Delete
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- DEVELOPER ACCESS & CONTROL PANEL ---
+        function renderDevUsersList() {
+            const listEl = document.getElementById('devUsersList');
+            if (!listEl) return;
+
+            const users = window.usersData;
+            listEl.innerHTML = Object.keys(users).map(username => {
+                const u = users[username];
+                return `
+                    <div class="p-3 bg-white rounded-lg border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <div class="font-bold text-sm text-slate-900">${u.displayName} <code class="text-xs text-purple-700 font-mono">(${username})</code></div>
+                            <div class="text-xs text-slate-500 uppercase font-semibold">${u.role}</div>
+                        </div>
+                        <span class="inline-flex items-center text-xs font-medium text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                            Active
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.handleDevResetPassword = async function(e) {
+            e.preventDefault();
+            if (window.currentUser.role !== 'DEVELOPER') return;
+
+            const targetUsername = document.getElementById('devTargetUser').value;
+            const newPassword = document.getElementById('devNewPassword').value;
+
+            try {
+                const newHash = await hashPassword(newPassword, GLOBAL_SALT);
+                await update(ref(db, `users/${targetUsername}`), {
+                    passwordHash: newHash
+                });
+
+                alert(`Password for user "${targetUsername}" updated successfully to "${newPassword}"!`);
+                document.getElementById('devNewPassword').value = '';
+            } catch (err) {
+                console.error("Error resetting password:", err);
+                alert("Failed to reset password.");
+            }
+        }
+
+        // --- SECURITY MODAL & USER PASSWORD UPDATE ---
+        window.openSecurityModal = function() {
+            document.getElementById('secCurrentUsername').value = window.currentUser.displayName + ` (${window.currentUser.username})`;
+            document.getElementById('secError').classList.add('hidden');
+            document.getElementById('secSuccess').classList.add('hidden');
+            document.getElementById('changePasswordForm').reset();
+            document.getElementById('securityModal').classList.remove('hidden');
+        }
+
+        window.closeSecurityModal = function() {
+            document.getElementById('securityModal').classList.add('hidden');
+        }
+
+        window.handleChangePassword = async function(e) {
+            e.preventDefault();
+            const newPass = document.getElementById('secNewPassword').value;
+            const confirmPass = document.getElementById('secConfirmPassword').value;
+            const errEl = document.getElementById('secError');
+            const succEl = document.getElementById('secSuccess');
+
+            errEl.classList.add('hidden');
+            succEl.classList.add('hidden');
+
+            if (newPass !== confirmPass) {
+                errEl.innerText = "New passwords do not match!";
+                errEl.classList.remove('hidden');
+                return;
+            }
+
+            try {
+                const newHash = await hashPassword(newPass, GLOBAL_SALT);
+                await update(ref(db, `users/${window.currentUser.username}`), {
+                    passwordHash: newHash
+                });
+
+                succEl.classList.remove('hidden');
+                setTimeout(() => {
+                    closeSecurityModal();
+                }, 1500);
+            } catch (err) {
+                console.error("Error updating password:", err);
+                errEl.innerText = "Failed to update password.";
+                errEl.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
